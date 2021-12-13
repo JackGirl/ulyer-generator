@@ -1,0 +1,9 @@
+[
+  {
+    "name": "vue2",
+    "uiFrameworks": [
+      "element-ui",
+      "ant-design"
+    ]
+  }
+]
