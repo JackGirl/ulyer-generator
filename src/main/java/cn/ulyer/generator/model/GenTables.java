@@ -13,7 +13,7 @@ public class GenTables {
 
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long _id;
+    private String _id;
 
     private String tableName;
 

@@ -1,5 +1,6 @@
 package cn.ulyer.generator.core.datasource;
 
+import cn.ulyer.generator.core.GenConfiguration;
 import cn.ulyer.generator.model.DataSourceProperty;
 import cn.ulyer.generator.model.GenColumns;
 import cn.ulyer.generator.model.GenTables;
@@ -20,7 +21,7 @@ public class OracleHelper implements DataSourceHelper{
     }
 
     @Override
-    public List<GenColumns> getColumns(DataSource dataSource, Map<String, String> params) {
+    public List<GenColumns> getColumns(DataSource dataSource, GenConfiguration configuration, Map<String, String> params) {
         return null;
     }
 

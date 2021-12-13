@@ -13,17 +13,23 @@ public class GenColumns {
 
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long _id;
+    private String _id;
 
     private String tableId;
 
+    private boolean uniqueId;
+
     private String name;
+
+    private String propertyName;
 
     private String comment;
 
     private String javaType;
 
     private String jdbcType;
+
+    private boolean nullable;
 
 
 
