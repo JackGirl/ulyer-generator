@@ -14,6 +14,11 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author ulyer
+ * @date 2021.12.13
+ * 生成全局配置
+ */
 public class GenConfiguration {
 
     private static Map<DataBaseTypes, DataSourceHelper> DATA_SOURCE_HELPER_MAP;

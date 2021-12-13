@@ -5,6 +5,11 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * @author ulyer
+ * @date 2021.12.13
+ * 生成参数
+ */
 @Data
 public class GeneratorParams {
 

@@ -1,9 +1,52 @@
 package cn.ulyer.generator.util;
 
+/**
+ * @author ulyer
+ * @date 2021.12.13
+ * 字符串
+ */
 public class StringUtil {
 
     public static boolean isBlank(String value){
         return value==null||value.length()==0||value.replaceAll("\\s","").equals("");
     }
 
+
+    /**
+     * use hutool
+     * @param name
+     * @return
+     */
+    public static String toCamelCase(CharSequence name) {
+        if (null == name) {
+            return null;
+        } else {
+            String name2 = name.toString();
+            if (contains(name2, '_')) {
+                int length = name2.length();
+                StringBuilder sb = new StringBuilder(length);
+                boolean upperCase = false;
+
+                for(int i = 0; i < length; ++i) {
+                    char c = name2.charAt(i);
+                    if (c == '_') {
+                        upperCase = true;
+                    } else if (upperCase) {
+                        sb.append(Character.toUpperCase(c));
+                        upperCase = false;
+                    } else {
+                        sb.append(Character.toLowerCase(c));
+                    }
+                }
+
+                return sb.toString();
+            } else {
+                return name2;
+            }
+        }
+    }
+
+    public static boolean contains(String str,char c){
+        return str != null && str.indexOf(c, 0) != -1;
+    }
 }

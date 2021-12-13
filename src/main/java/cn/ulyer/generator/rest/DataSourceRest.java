@@ -17,6 +17,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+/**
+ * @author ulyer
+ * @date 2021.12.13
+ * 数据源rest
+ */
 @RequestMapping("/dataSourceRest")
 @RestController(DataSourceRest.NAME)
 public class DataSourceRest {

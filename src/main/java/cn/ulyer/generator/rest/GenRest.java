@@ -19,6 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author ulyer
+ * @date 2021.12.13
+ */
 @RestController(GenRest.NAME)
 @RequestMapping("/genRest")
 public class GenRest {
@@ -71,11 +75,14 @@ public class GenRest {
         DataSourceHelper dataSourceHelper = genConfiguration.getDataSourceHelper(DataBaseTypes.valueOf(property.getType()));
         DataSource dataSource = dataSourceHelper.create(property);
         Map<String,String> params = new HashMap<>();
-        params.put("tableNames", ArrayUtil.iteratorToString(tableNames.iterator(),","));
+        params.put("tableName", ArrayUtil.iteratorToString(tableNames.iterator(),","));
         List<GenTables> genTables = dataSourceHelper.getTables(dataSource,params);
         genTables.forEach(genTable -> {
             final long count = mongoTemplate.count(Query.query(Criteria.where("dataBaseId").is(id).and("tableName").is(genTable.getTableName())),GenTables.class);
             if(count==0){
+                genTable.setClassName(StringUtil.toCamelCase(genTable.getTableName()));
+                genTable.setDataBaseId(property.get_id());
+                genTable.setDataBaseName(property.getName());
                 mongoTemplate.insert(genTable);
                 Map<String,String> columnParams = new HashMap<>();
                 columnParams.put("tableName",genTable.getTableName());
@@ -83,9 +90,9 @@ public class GenRest {
                 genColumns.forEach(g->{
                     g.setTableId(genTable.get_id());
                     g.setJavaType(genConfiguration.convert(g.getJdbcType()).getName());
-                    g.setPropertyName(g.getName());
+                    g.setPropertyName(StringUtil.toCamelCase(g.getName()));
                 });
-                mongoTemplate.insert(genColumns);
+                mongoTemplate.insert(genColumns,GenColumns.class);
             }
         });
         return true;

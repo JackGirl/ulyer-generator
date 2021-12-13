@@ -2,6 +2,11 @@ package cn.ulyer.generator.util;
 
 import java.util.Iterator;
 
+/**
+ * @author ulyer
+ * @date 2021.12.13
+ * 数组工具
+ */
 public class ArrayUtil {
 
     public static String iteratorToString(Iterator<?> iterator,String join){

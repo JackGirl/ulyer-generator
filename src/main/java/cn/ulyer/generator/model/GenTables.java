@@ -7,6 +7,11 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * @author ulyer
+ * @date 2021.12.13
+ * 可生成表
+ */
 @Document("gen_tables")
 @Data
 public class GenTables {

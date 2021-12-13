@@ -9,6 +9,11 @@ import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
 
+/**
+ * @author ulyer
+ * @date 2021.12.13
+ * 生成配置类加载
+ */
 @Configuration
 public class GenAutoConfiguration {
 

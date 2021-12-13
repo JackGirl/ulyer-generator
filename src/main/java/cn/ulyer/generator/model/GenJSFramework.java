@@ -8,6 +8,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
+/**
+ * @author ulyer
+ * @date 2021.12.13
+ * 可选生成ui js框架配置
+ */
 @Document("js_frameworks")
 @Data
 public class GenJSFramework {

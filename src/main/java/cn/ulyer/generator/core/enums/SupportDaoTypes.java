@@ -2,6 +2,10 @@ package cn.ulyer.generator.core.enums;
 
 import lombok.Getter;
 
+/**
+ * @author ulyer
+ * @date 2021.12.13
+ */
 @Getter
 public enum SupportDaoTypes {
     /**

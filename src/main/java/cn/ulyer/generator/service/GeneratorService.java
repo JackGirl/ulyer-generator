@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.OutputStream;
 
+/**
+ * @author ulyer
+ * @date 2021.12.13
+ * 生成服务类
+ */
 @Service
 public class GeneratorService {
 
