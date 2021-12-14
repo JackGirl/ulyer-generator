@@ -35,67 +35,44 @@ public class GenRest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @GetMapping("/listTableModels")
-    public List<GenTables> genTables(GenTables queryModel){
-        Query query = new Query();
-        if(!StringUtil.isBlank(queryModel.getTableName())){
-            query.addCriteria(Criteria.where("tableName").is(queryModel.getTableName()));
-        }
-        if(StringUtil.isBlank(queryModel.getDataBaseId())){
-            query.addCriteria(Criteria.where("dataBaseId").is(queryModel.getDataBaseId()));
-        }
-        return mongoTemplate.find(query,GenTables.class);
-    }
-
-    @GetMapping("/listColumnModels")
-    public List<GenColumns> genColumns(GenColumns queryModel){
-        Query query = new Query();
-        if(!StringUtil.isBlank(queryModel.getName())){
-            query.addCriteria(Criteria.where("name").is(queryModel.getName()));
-        }
-        if(queryModel.getTableId()!=null){
-            query.addCriteria(Criteria.where("tableId").is(queryModel.getTableId()));
-        }
-        return mongoTemplate.find(query,GenColumns.class);
-    }
-
-
     /**
-     * 导入查询出的表
+     * 导入查询出database的表
      * @param tableNames
      * @param id
      * @return
      */
     @PostMapping("/import")
-    public boolean importTable(@RequestParam List<String> tableNames, @RequestParam String id) throws Exception {
+    public String importTable(@RequestParam List<String> tableNames, @RequestParam String id) throws Exception {
         DataSourceProperty property =  mongoTemplate.findOne(new Query(Criteria.where("_id").is(id)),DataSourceProperty.class);
         if(property==null){
-            return false;
+            return "success: 0";
         }
         DataSourceHelper dataSourceHelper = genConfiguration.getDataSourceHelper(DataBaseTypes.valueOf(property.getType()));
         DataSource dataSource = dataSourceHelper.create(property);
         Map<String,String> params = new HashMap<>();
         params.put("tableName", ArrayUtil.iteratorToString(tableNames.iterator(),","));
         List<GenTables> genTables = dataSourceHelper.getTables(dataSource,params);
-        genTables.forEach(genTable -> {
-            final long count = mongoTemplate.count(Query.query(Criteria.where("dataBaseId").is(id).and("tableName").is(genTable.getTableName())),GenTables.class);
-            if(count==0){
+        int successCount = 0;
+        for (GenTables genTable : genTables) {
+            final long count = mongoTemplate.count(Query.query(Criteria.where("dataSourceId").is(id).and("tableName").is(genTable.getTableName())), GenTables.class);
+            if (count == 0) {
                 genTable.setClassName(StringUtil.toCamelCase(genTable.getTableName()));
-                genTable.setDataBaseId(property.get_id());
-                genTable.setDataBaseName(property.getName());
+                genTable.setDataSourceId(property.get_id());
+                genTable.setDataSourceName(property.getName());
                 mongoTemplate.insert(genTable);
-                Map<String,String> columnParams = new HashMap<>();
-                columnParams.put("tableName",genTable.getTableName());
-                List<GenColumns> genColumns = dataSourceHelper.getColumns(dataSource,genConfiguration,columnParams);
-                genColumns.forEach(g->{
+                Map<String, String> columnParams = new HashMap<>();
+                columnParams.put("tableName", genTable.getTableName());
+                List<GenColumns> genColumns = dataSourceHelper.getColumns(dataSource, genConfiguration, columnParams);
+                genColumns.forEach(g -> {
                     g.setTableId(genTable.get_id());
                     g.setJavaType(genConfiguration.convert(g.getJdbcType()).getName());
                     g.setPropertyName(StringUtil.toCamelCase(g.getName()));
                 });
-                mongoTemplate.insert(genColumns,GenColumns.class);
+                mongoTemplate.insert(genColumns, GenColumns.class);
+                successCount++;
             }
-        });
-        return true;
+        }
+        return "success:"+successCount+" fail："+(genTables.size()-successCount);
     }
 
 }

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <#include "common/lib.html">
+    <script type="module" src="${contextPath!}/static/js/tables.js"></script>
+    <title>代码生成</title>
+</head>
+<style>
+    #app {
+        padding: 40px;
+    }
+    .search-container{
+        margin-bottom: 20px;
+    }
+</style>
+<body>
+<div id="app">
+    <div class="search-container">
+        <a-form
+                ref="formRef"
+                layout="inline"
+                :model="searchModel">
+            <a-form-item label="表名">
+                <a-input v-model:value="searchModel.tableName" placeholder="tableName">
+                </a-input>
+            </a-form-item>
+            <a-form-item>
+                <a-select style="width:200px" v-model:value="searchModel.dataSourceId">
+                    <a-select-option value="">所有</a-select-option>
+                    <a-select-option v-for="dataSource in dataSources" :key="dataSource._id">{{dataSource.name}}</a-select-option>
+                </a-select>
+            </a-form-item>
+            <a-form-item>
+                <a-space>
+                    <a-button
+                            type="primary"
+                            @click="searchTable">
+                        查询
+                    </a-button>
+                    <a-button
+                            type="default">
+                        生成
+                    </a-button>
+                    <a-button
+                            type="default">
+                        导入
+                    </a-button>
+                    <a-button
+                            type="danger">
+                        数据源
+                    </a-button>
+
+                </a-space>
+            </a-form-item>
+        </a-form>
+    </div>
+    <a-table :loading="loading" :row-key="(record)=>record._id" :row-selection="rowSelection" style="min-height: 400px" :data-source="tables" :columns="columns">
+        <template #action="{record}">
+            <a-button type="text" danger @click="openFormVisible(record)">修改</a-button>
+            <a-button type="text"  danger>编辑字段</a-button>
+            <a-button type="text"  danger>删除</a-button>
+        </template>
+    </a-table>
+    <a-modal v-model:visible="modifyTableVisible" title="修改" footer="" width="30%">
+        <modify-table ref="modifyTableRef" @success="onSuccessUpdate"></modify-table>
+    </a-modal>
+</div>
+</body>
+</html>

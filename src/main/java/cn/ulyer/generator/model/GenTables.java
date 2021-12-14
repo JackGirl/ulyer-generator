@@ -26,9 +26,9 @@ public class GenTables {
 
     private String className;
 
-    private String dataBaseId;
+    private String dataSourceId;
 
-    private String dataBaseName;
+    private String dataSourceName;
 
 
 }

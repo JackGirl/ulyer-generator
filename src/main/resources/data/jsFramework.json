@@ -5,5 +5,12 @@
       "element-ui",
       "ant-design"
     ]
+  },
+  {
+    "name": "vue3",
+    "uiFrameworks": [
+      "element-ui",
+      "ant-design"
+    ]
   }
 ]
