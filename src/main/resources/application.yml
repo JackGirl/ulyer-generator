@@ -17,4 +17,7 @@ server:
   port: 8888
   servlet:
     context-path:
-
+logging:
+  level:
+    org.springframework.jdbc.core: DEBUG
+    org.springframework.jdbc.core.StatementCreatorUtils: trace

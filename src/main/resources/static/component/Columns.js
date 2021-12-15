@@ -38,7 +38,7 @@ const template =
             </a-select>
         </template>
         <template #action="{record}">
-            <a-button danger>删除</a-button>
+            <a-button @click="removeColumns(record)" danger>删除</a-button>
         </template>
     </a-table>
 </div>
@@ -102,6 +102,18 @@ const Column = defineComponent({
                 loading.value = false
             })
         }
+        const removeColumns = (row)=>{
+            antd.Modal.confirm({
+                title:'提示',
+                content:'删除后点击保存即可彻底删除',
+                onOk:()=>{
+                    return new Promise(resolver=>{
+                        dataSource.value = dataSource.filter(record=>record._id===row._id)
+                        resolver()
+                    })
+                }
+            })
+        }
         const saveColumns = () =>{
            /* Api.updateTableColumns(dataSource).then(res=>{
                 antd.message.success("已更新")
@@ -130,7 +142,8 @@ const Column = defineComponent({
             loading,
             javaTypes,
             saveColumns,
-            filterOption
+            filterOption,
+            removeColumns
         }
     }
 })

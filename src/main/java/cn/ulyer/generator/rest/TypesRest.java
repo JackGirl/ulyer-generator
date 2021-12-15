@@ -6,12 +6,15 @@ import cn.ulyer.generator.core.enums.JavaTypes;
 import cn.ulyer.generator.model.GenModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -32,8 +35,12 @@ public class TypesRest {
      * @return
      */
     @GetMapping("/modules")
-    public List<GenModule> modules(){
-        return mongoTemplate.findAll(GenModule.class);
+    public Map<String,List<GenModule>> modules(){
+        List<GenModule> genModules =  mongoTemplate.findAll(GenModule.class);
+        if(CollectionUtils.isEmpty(genModules)){
+            return new HashMap<>();
+        }
+        return genModules.stream().collect(Collectors.groupingBy(GenModule::getGroup));
     }
 
     /**
@@ -52,15 +59,6 @@ public class TypesRest {
     @GetMapping("/javaTypes")
     public List<String> javaTypes(){
         return Arrays.stream(JavaTypes.values()).map(d->d.getTypeName()).collect(Collectors.toList());
-    }
-
-
-    /**
-     * 支持的js框架 ui等
-     */
-    @GetMapping("/jsFramework")
-    public List<GenModule> jsFrameworks(){
-        return mongoTemplate.findAll(GenModule.class);
     }
 
 

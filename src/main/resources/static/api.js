@@ -16,8 +16,21 @@ const queryDataSources = ()=>{
         url:`${context}/dataSourceRest/listDataSource`
     })
 }
-
-const queryTables = (params)=>{
+/**
+ * 查询真实数据库表
+ * @param dataSourceId
+ */
+const queryDbTables = (dataSourceId) => {
+    return axios({
+        url:`${context}/dataSourceRest/datasourceTables/${dataSourceId}`
+    })
+}
+/**
+ * 查询配置的生成表
+ * @param params
+ * @returns {*}
+ */
+const queryGenTables = (params)=>{
     return axios({
         url:`${context}/tableRest/listTableModels`,
         method:'get',
@@ -41,11 +54,20 @@ const updateTableColumns = (columns)=> {
     })
 }
 
+const removeTableById = (tableId)=> {
+    return axios({
+        url:`${context}/tableRest/remove/${tableId}`,
+        method:'delete'
+    })
+}
+
 export default {
-    queryTables,
+    queryGenTables,
     queryJavaTypes,
     queryDbTypes,
     queryDataSources,
     queryTableColumns,
-    updateTableColumns
+    updateTableColumns,
+    removeTableById,
+    queryDbTables
 }

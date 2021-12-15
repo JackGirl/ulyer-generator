@@ -12,12 +12,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author ulyer
@@ -65,17 +63,17 @@ public class MysqlHelper implements DataSourceHelper{
 
     @Override
     public List<GenTable> getTables(DataSource dataSource, Map<String, String> params) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         String queryString = TABLE_QUERY;
-        List query = new ArrayList();
+        Map<String,Object> query = new HashMap<>();
         if(params!=null){
             String tableName = params.get("tableName");
             if(!StringUtil.isBlank(tableName)){
-                queryString+=" and instr(?,table_name)";
-                query.add(tableName);
+                queryString+=" and table_name in(:tableName)";
+                query.put("tableName",Arrays.asList(tableName.split(",")));
             }
         }
-        List<GenTable> tables =   jdbcTemplate.query(queryString,  new BeanPropertyRowMapper<>(GenTable.class),query.toArray());
+        List<GenTable> tables =   jdbcTemplate.query(queryString,query,new BeanPropertyRowMapper<>(GenTable.class));
         return tables==null? Collections.EMPTY_LIST:tables;
     }
 

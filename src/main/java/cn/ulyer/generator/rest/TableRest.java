@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * @author ulyer
+ * @date 2021/12/14
  * 配置表 列相关
  */
 @RestController
@@ -93,12 +95,6 @@ public class TableRest {
         return true;
     }
 
-
-    @DeleteMapping("/removeColumn/{columnId}")
-    public boolean removeColumn(@PathVariable String columnId){
-        mongoTemplate.remove(Query.query(Criteria.where("_id").is(columnId)), GenColumn.class);
-        return true;
-    }
 
     @PostMapping("/createColumn")
     public String createColumn (@RequestBody GenColumn columns){

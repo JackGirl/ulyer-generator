@@ -26,7 +26,6 @@ public class GenModuleTest extends UlyerGeneratorApplicationTests{
     public void initData(){
         ClassPathResource classPathResource = new ClassPathResource("data/GenModules.json");
         try (InputStream stream =  classPathResource.getInputStream()){
-            mongoTemplate.createCollection(GenModule.class);
             byte[] bytes = new byte[stream.available()];
             IOUtils.readFully(stream,bytes);
             List<GenModule> list = objectMapper.readValue(new String(bytes, StandardCharsets.UTF_8), new TypeReference<List<GenModule>>(){});

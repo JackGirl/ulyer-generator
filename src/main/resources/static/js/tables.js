@@ -1,6 +1,8 @@
 import Api from '../api.js'
 import ModifyTable from "../component/ModifyTable.js";
 import ColumnApp from '../component/Columns.js'
+import ImportTable from "../component/ImportTable.js";
+
 const {ref, createApp, reactive, defineComponent, onMounted, nextTick} = Vue;
 const columns = [
     {
@@ -30,37 +32,48 @@ const columns = [
 ]
 
 const App = defineComponent({
+    name:'tables',
+    components: {
+        ModifyTable,
+        ColumnApp,
+        ImportTable
+    },
     setup() {
         //search and table
-        let tables = ref([])
+        const tables = ref([])
         const searchModel = reactive({tableName: '', dataSourceId: ''});
         const formRef = ref()
         const loading = ref(false);
-        onMounted(() => {
-            loading.value = true
-            Api.queryTables({}).then(res => {
-                tables.value = res.data
+        const searchTable = () => {
+            loading.value = true;
+            Api.queryGenTables(searchModel).then(res => {
+                tables.value = res.data;
                 loading.value = false
             })
+        }
+        onMounted(() => {
+            searchTable()
         })
-        const searchTable = () => Api.queryTables(searchModel).then(res => {
-            tables.value = res.data;
-        })
-
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
             }
-        };
+        }
+        const removeTable = (record) => {
+            Api.removeTableById(record._id).then(res => {
+                ant.message.success("remove success")
+                searchTable()
+            })
+        }
         //datasource
-        let dataSources = ref([])
+        const dataSources = ref([])
         onMounted(() => {
             Api.queryDataSources().then(res => {
                 dataSources.value = res.data
             })
         })
 
-        //sub component form
+        //sub component edit table form
         const modifyTableRef = ref(null)
         const modifyTableVisible = ref(false)
         const openFormVisible = (row) => {
@@ -77,12 +90,15 @@ const App = defineComponent({
         //subComponent column
         const columnAppVisible = ref(false);
         const columnAppRef = ref()
-        const openColumnApp = (record)=>{
+        const openColumnApp = (record) => {
             columnAppVisible.value = true
-            nextTick(()=>{
+            nextTick(() => {
                 columnAppRef.value.queryColumns(record._id)
             })
         }
+        //subComponent pop importTable
+        const importTableRef = ref()
+        const importTableVisible = ref(false)
         //generator
         return {
             modifyTableVisible,
@@ -96,15 +112,14 @@ const App = defineComponent({
             searchTable,
             searchModel,
             rowSelection,
+            removeTable,
             loading,
             openColumnApp,
             columnAppVisible,
-            columnAppRef
+            columnAppRef,
+            importTableRef,
+            importTableVisible
         }
-    },
-    components: {
-        ModifyTable,
-        ColumnApp
     }
 
 

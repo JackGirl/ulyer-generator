@@ -1,0 +1,38 @@
+[
+  {
+    "name": "vue2_elementUi",
+    "type": "vue",
+    "template": "",
+    "nameExpression": "${context.}"
+  },
+  {
+    "name": "vue_axios",
+    "type": "js",
+    "template": "",
+    "nameExpression": "${context.}"
+  },
+  {
+    "name": "mybatis_plus_mapper",
+    "type": "java",
+    "template": "",
+    "nameExpression": "${context.}"
+  },
+  {
+    "name": "mybatis_plus_service",
+    "type": "java",
+    "template": "",
+    "nameExpression": "${context.}"
+  },
+  {
+    "name": "mybatis_plus_serviceImpl",
+    "type": "java",
+    "template": "",
+    "nameExpression": "${context.}"
+  },
+  {
+    "name": "mybatis_xml",
+    "type": "xml",
+    "template": "",
+    "nameExpression": "${context.}"
+  }
+]
