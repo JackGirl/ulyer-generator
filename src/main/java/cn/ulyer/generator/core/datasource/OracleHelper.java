@@ -2,8 +2,8 @@ package cn.ulyer.generator.core.datasource;
 
 import cn.ulyer.generator.core.GenConfiguration;
 import cn.ulyer.generator.model.DataSourceProperty;
-import cn.ulyer.generator.model.GenColumns;
-import cn.ulyer.generator.model.GenTables;
+import cn.ulyer.generator.model.GenColumn;
+import cn.ulyer.generator.model.GenTable;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -20,12 +20,12 @@ public class OracleHelper implements DataSourceHelper{
     }
 
     @Override
-    public List<GenTables> getTables(DataSource dataSource, Map<String, String> params) {
+    public List<GenTable> getTables(DataSource dataSource, Map<String, String> params) {
         return null;
     }
 
     @Override
-    public List<GenColumns> getColumns(DataSource dataSource, GenConfiguration configuration, Map<String, String> params) {
+    public List<GenColumn> getColumns(DataSource dataSource, GenConfiguration configuration, Map<String, String> params) {
         return null;
     }
 

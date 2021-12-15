@@ -4,8 +4,8 @@ import cn.ulyer.generator.core.GenConfiguration;
 import cn.ulyer.generator.core.datasource.DataSourceHelper;
 import cn.ulyer.generator.core.enums.DataBaseTypes;
 import cn.ulyer.generator.model.DataSourceProperty;
-import cn.ulyer.generator.model.GenColumns;
-import cn.ulyer.generator.model.GenTables;
+import cn.ulyer.generator.model.GenColumn;
+import cn.ulyer.generator.model.GenTable;
 import cn.ulyer.generator.util.ArrayUtil;
 import cn.ulyer.generator.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +51,10 @@ public class GenRest {
         DataSource dataSource = dataSourceHelper.create(property);
         Map<String,String> params = new HashMap<>();
         params.put("tableName", ArrayUtil.iteratorToString(tableNames.iterator(),","));
-        List<GenTables> genTables = dataSourceHelper.getTables(dataSource,params);
+        List<GenTable> genTables = dataSourceHelper.getTables(dataSource,params);
         int successCount = 0;
-        for (GenTables genTable : genTables) {
-            final long count = mongoTemplate.count(Query.query(Criteria.where("dataSourceId").is(id).and("tableName").is(genTable.getTableName())), GenTables.class);
+        for (GenTable genTable : genTables) {
+            final long count = mongoTemplate.count(Query.query(Criteria.where("dataSourceId").is(id).and("tableName").is(genTable.getTableName())), GenTable.class);
             if (count == 0) {
                 genTable.setClassName(StringUtil.toCamelCase(genTable.getTableName()));
                 genTable.setDataSourceId(property.get_id());
@@ -62,13 +62,13 @@ public class GenRest {
                 mongoTemplate.insert(genTable);
                 Map<String, String> columnParams = new HashMap<>();
                 columnParams.put("tableName", genTable.getTableName());
-                List<GenColumns> genColumns = dataSourceHelper.getColumns(dataSource, genConfiguration, columnParams);
+                List<GenColumn> genColumns = dataSourceHelper.getColumns(dataSource, genConfiguration, columnParams);
                 genColumns.forEach(g -> {
                     g.setTableId(genTable.get_id());
                     g.setJavaType(genConfiguration.convert(g.getJdbcType()).getName());
                     g.setPropertyName(StringUtil.toCamelCase(g.getName()));
                 });
-                mongoTemplate.insert(genColumns, GenColumns.class);
+                mongoTemplate.insert(genColumns, GenColumn.class);
                 successCount++;
             }
         }

@@ -2,9 +2,7 @@ package cn.ulyer.generator.page;
 
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -25,20 +23,15 @@ public class PageRouter {
         return "tables";
     }
 
-    /**
-     * 列
-     * @param tableId
-     * @param model
-     * @return
-     */
-    @GetMapping("/column/{tableId}")
-    public String columnPage(@PathVariable String tableId, Model model){
-        model.addAttribute("tableId",tableId);
-        return "column";
-    }
+
 
     @GetMapping("/dataSource")
     public String dataSource(){
         return "dataSource";
+    }
+
+    @GetMapping("/template")
+    public String templateConfig(){
+        return "template";
     }
 }

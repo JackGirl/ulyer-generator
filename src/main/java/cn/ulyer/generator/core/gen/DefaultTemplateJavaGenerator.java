@@ -10,15 +10,7 @@ import java.io.OutputStream;
  * @date 2021.12.13
  * 抽象mvc层生成
  */
-public abstract class AbstractMvcGeneratorMvc implements GeneratorMvcHelper {
-
-    protected  byte[] generatorRest(GeneratorContext generatorContext){
-        return null;
-    }
-
-    protected abstract byte[] generatorService(GeneratorContext generatorContext);
-
-    protected abstract byte[] generatorDao(GeneratorContext generatorContext);
+public  class DefaultTemplateJavaGenerator implements JavaGenerator {
 
     @Override
     public InputStream genJava(GeneratorContext generatorContext, OutputStream outputStream) {

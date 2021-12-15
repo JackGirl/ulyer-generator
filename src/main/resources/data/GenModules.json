@@ -1,0 +1,26 @@
+[
+  {
+    "name": "vue2",
+    "uiFrameworks": [
+      {"name":"element-ui",
+        "template": []
+      },
+      {
+        "name":  "ant-design",
+        "template": []
+      }
+    ]
+  },
+  {
+    "name": "vue3",
+    "uiFrameworks": [
+      {"name":"element-ui",
+        "template": []
+      },
+      {
+        "name":  "ant-design",
+        "template": []
+      }
+    ]
+  }
+]

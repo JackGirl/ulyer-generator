@@ -24,18 +24,7 @@ const template =
 </div>
     `;
 
-const loadTableById = (tableId)=>{
-    return axios({
-        url:`${context}/tableRest/details/${tableId}`
-    })
-}
-const updateTable = (table)=>{
-    return axios({
-        url:`${context}/tableRest/update`,
-        method:'post',
-        data:table
-    })
-}
+
 
 export default defineComponent({
     template,
@@ -81,3 +70,17 @@ export default defineComponent({
         }
     }
 })
+
+
+const loadTableById = (tableId)=>{
+    return axios({
+        url:`${context}/tableRest/details/${tableId}`
+    })
+}
+const updateTable = (table)=>{
+    return axios({
+        url:`${context}/tableRest/update`,
+        method:'post',
+        data:table
+    })
+}

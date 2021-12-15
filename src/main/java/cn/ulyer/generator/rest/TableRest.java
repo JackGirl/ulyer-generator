@@ -1,7 +1,7 @@
 package cn.ulyer.generator.rest;
 
-import cn.ulyer.generator.model.GenColumns;
-import cn.ulyer.generator.model.GenTables;
+import cn.ulyer.generator.model.GenColumn;
+import cn.ulyer.generator.model.GenTable;
 import cn.ulyer.generator.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -29,7 +29,7 @@ public class TableRest {
      * @return
      */
     @GetMapping("/listTableModels")
-    public List<GenTables> genTables(GenTables queryModel){
+    public List<GenTable> genTables(GenTable queryModel){
         Query query = new Query();
         if(!StringUtil.isBlank(queryModel.getTableName())){
             query.addCriteria(Criteria.where("tableName").is(queryModel.getTableName()));
@@ -37,7 +37,7 @@ public class TableRest {
         if(!StringUtil.isBlank(queryModel.getDataSourceId())){
             query.addCriteria(Criteria.where("dataSourceId").is(queryModel.getDataSourceId()));
         }
-        return mongoTemplate.find(query,GenTables.class);
+        return mongoTemplate.find(query, GenTable.class);
     }
 
     /**
@@ -46,7 +46,7 @@ public class TableRest {
      * @return
      */
     @GetMapping("/listColumnModels")
-    public List<GenColumns> genColumns(GenColumns queryModel){
+    public List<GenColumn> genColumns(GenColumn queryModel){
         Query query = new Query();
         if(!StringUtil.isBlank(queryModel.getName())){
             query.addCriteria(Criteria.where("name").is(queryModel.getName()));
@@ -54,7 +54,7 @@ public class TableRest {
         if(queryModel.getTableId()!=null){
             query.addCriteria(Criteria.where("tableId").is(queryModel.getTableId()));
         }
-        return mongoTemplate.find(query,GenColumns.class);
+        return mongoTemplate.find(query, GenColumn.class);
     }
 
 
@@ -64,8 +64,8 @@ public class TableRest {
      * @return
      */
     @GetMapping("/details/{tableId}")
-    public GenTables getTableById(@PathVariable String tableId){
-        return mongoTemplate.findOne(Query.query(Criteria.where("_id").is(tableId)),GenTables.class);
+    public GenTable getTableById(@PathVariable String tableId){
+        return mongoTemplate.findOne(Query.query(Criteria.where("_id").is(tableId)), GenTable.class);
     }
 
     /**
@@ -74,11 +74,11 @@ public class TableRest {
      * @return
      */
     @PostMapping("/update")
-    public boolean updateTable(@RequestBody GenTables tables){
+    public boolean updateTable(@RequestBody GenTable tables){
         Update update = new Update();
         update.set("comment",tables.getComment())
                         .set("className",tables.getClassName());
-        return mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(tables.get_id())),update,GenTables.class).getModifiedCount()>0;
+        return mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(tables.get_id())),update, GenTable.class).getModifiedCount()>0;
     }
 
     @PostMapping("/updateColumns")
@@ -88,9 +88,22 @@ public class TableRest {
 
     @DeleteMapping("/remove/{tableId}")
     public boolean removeTable(@PathVariable String tableId){
-        mongoTemplate.remove(Query.query(Criteria.where("tableId").is(tableId)),GenColumns.class);
-        mongoTemplate.remove(Query.query(Criteria.where("_id").is(tableId)),GenTables.class);
+        mongoTemplate.remove(Query.query(Criteria.where("tableId").is(tableId)), GenColumn.class);
+        mongoTemplate.remove(Query.query(Criteria.where("_id").is(tableId)), GenTable.class);
         return true;
+    }
+
+
+    @DeleteMapping("/removeColumn/{columnId}")
+    public boolean removeColumn(@PathVariable String columnId){
+        mongoTemplate.remove(Query.query(Criteria.where("_id").is(columnId)), GenColumn.class);
+        return true;
+    }
+
+    @PostMapping("/createColumn")
+    public String createColumn (@RequestBody GenColumn columns){
+        mongoTemplate.insert(columns);
+        return columns.get_id();
     }
 
 }

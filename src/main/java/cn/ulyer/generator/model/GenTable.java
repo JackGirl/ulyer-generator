@@ -10,32 +10,25 @@ import org.springframework.data.mongodb.core.mapping.Document;
 /**
  * @author ulyer
  * @date 2021.12.13
- * 生成字段配置
+ * 可生成表
  */
-@Document("gen_columns")
+@Document("gen_table")
 @Data
-public class GenColumns {
+public class GenTable {
 
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
     private String _id;
 
-    private String tableId;
-
-    private boolean uniqueId;
-
-    private String name;
-
-    private String propertyName;
+    private String tableName;
 
     private String comment;
 
-    private String javaType;
+    private String className;
 
-    private String jdbcType;
+    private String dataSourceId;
 
-    private boolean nullable;
-
+    private String dataSourceName;
 
 
 }

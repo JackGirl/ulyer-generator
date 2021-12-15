@@ -1,34 +1,41 @@
 package cn.ulyer.generator.model;
 
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 /**
  * @author ulyer
  * @date 2021.12.13
- * 可生成表
+ * 可选生成ui js框架配置
  */
-@Document("gen_tables")
+@Document("gen_module")
 @Data
-public class GenTables {
+public class GenModule {
 
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
     private String _id;
 
-    private String tableName;
+    private String moduleName;
 
-    private String comment;
+    private List<ModuleTemplate> templates;
 
-    private String className;
+    @Getter
+    @Setter
+    public static final class ModuleTemplate{
 
-    private String dataSourceId;
+        private String name;
 
-    private String dataSourceName;
+        private List<String> templates;
 
+    }
 
 }
+

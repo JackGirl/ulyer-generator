@@ -2,9 +2,8 @@ package cn.ulyer.generator.rest;
 
 
 import cn.ulyer.generator.core.enums.DataBaseTypes;
-import cn.ulyer.generator.core.enums.GenModules;
 import cn.ulyer.generator.core.enums.JavaTypes;
-import cn.ulyer.generator.model.GenJSFramework;
+import cn.ulyer.generator.model.GenModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +32,8 @@ public class TypesRest {
      * @return
      */
     @GetMapping("/modules")
-    public List<GenModules> modules(){
-        return Arrays.asList(GenModules.values());
+    public List<GenModule> modules(){
+        return mongoTemplate.findAll(GenModule.class);
     }
 
     /**
@@ -60,8 +59,8 @@ public class TypesRest {
      * 支持的js框架 ui等
      */
     @GetMapping("/jsFramework")
-    public List<GenJSFramework> jsFrameworks(){
-        return mongoTemplate.findAll(GenJSFramework.class);
+    public List<GenModule> jsFrameworks(){
+        return mongoTemplate.findAll(GenModule.class);
     }
 
 

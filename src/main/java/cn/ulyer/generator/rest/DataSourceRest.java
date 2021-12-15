@@ -5,7 +5,7 @@ import cn.ulyer.generator.core.GenConfiguration;
 import cn.ulyer.generator.core.datasource.DataSourceHelper;
 import cn.ulyer.generator.core.enums.DataBaseTypes;
 import cn.ulyer.generator.model.DataSourceProperty;
-import cn.ulyer.generator.model.GenTables;
+import cn.ulyer.generator.model.GenTable;
 import cn.ulyer.generator.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -84,8 +84,8 @@ public class DataSourceRest {
             return Collections.EMPTY_LIST;
         }
         DataSourceHelper dataSourceHelper = genConfiguration.getDataSourceHelper(DataBaseTypes.valueOf(property.getType()));
-        List<GenTables> tables = dataSourceHelper.getTables(dataSourceHelper.create(property),null);
-        return tables.stream().map(GenTables::getTableName).collect(Collectors.toList());
+        List<GenTable> tables = dataSourceHelper.getTables(dataSourceHelper.create(property),null);
+        return tables.stream().map(GenTable::getTableName).collect(Collectors.toList());
     }
 
 

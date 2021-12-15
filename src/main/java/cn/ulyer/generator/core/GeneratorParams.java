@@ -1,6 +1,6 @@
 package cn.ulyer.generator.core;
 
-import cn.ulyer.generator.core.enums.GenModules;
+import cn.ulyer.generator.model.GenModule;
 import lombok.Data;
 
 import java.util.List;
@@ -13,15 +13,7 @@ import java.util.List;
 @Data
 public class GeneratorParams {
 
-    private String jsFramework;
-
-    private String ui;
-
-    private String dao;
-
-    private boolean useSwagger;
-
-    private List<GenModules> genModules;
+    private List<GenModule> genModules;
 
     private String basePackage;
 

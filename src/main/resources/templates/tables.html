@@ -47,24 +47,35 @@
                         导入
                     </a-button>
                     <a-button
-                            type="danger">
+                            type="primary">
                         数据源
                     </a-button>
-
+                    <a-button
+                            type="primary">
+                        模板配置
+                    </a-button>
                 </a-space>
             </a-form-item>
         </a-form>
     </div>
-    <a-table :loading="loading" :row-key="(record)=>record._id" :row-selection="rowSelection" style="min-height: 400px" :data-source="tables" :columns="columns">
+    <a-table :pagination="false" :loading="loading" :row-key="(record)=>record._id" :row-selection="rowSelection" style="min-height: 400px" :data-source="tables" :columns="columns">
         <template #action="{record}">
             <a-button type="text" danger @click="openFormVisible(record)">修改</a-button>
-            <a-button type="text"  danger>编辑字段</a-button>
+            <a-button type="text"  danger @click="openColumnApp(record)">编辑字段</a-button>
             <a-button type="text"  danger>删除</a-button>
         </template>
     </a-table>
     <a-modal v-model:visible="modifyTableVisible" title="修改" footer="" width="30%">
         <modify-table ref="modifyTableRef" @success="onSuccessUpdate"></modify-table>
     </a-modal>
+    <a-drawer
+            :maskClosable="false"
+            title="update column"
+            :width="1200"
+            v-model:visible="columnAppVisible"
+            :body-style="{ paddingBottom: '80px' }">
+        <column-app ref="columnAppRef"></column-app>
+    </a-drawer>
 </div>
 </body>
 </html>

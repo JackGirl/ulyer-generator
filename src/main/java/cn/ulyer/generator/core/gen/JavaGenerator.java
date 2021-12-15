@@ -10,7 +10,7 @@ import java.io.OutputStream;
  * @date 2021.12.13
  * java层代码生成辅助类
  */
-public interface GeneratorMvcHelper {
+public interface JavaGenerator {
 
     InputStream genJava(GeneratorContext generatorContext, OutputStream outputStream);
 

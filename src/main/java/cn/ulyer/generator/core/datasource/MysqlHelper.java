@@ -2,8 +2,8 @@ package cn.ulyer.generator.core.datasource;
 
 import cn.ulyer.generator.core.GenConfiguration;
 import cn.ulyer.generator.model.DataSourceProperty;
-import cn.ulyer.generator.model.GenColumns;
-import cn.ulyer.generator.model.GenTables;
+import cn.ulyer.generator.model.GenColumn;
+import cn.ulyer.generator.model.GenTable;
 import cn.ulyer.generator.util.StringUtil;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -64,7 +64,7 @@ public class MysqlHelper implements DataSourceHelper{
     }
 
     @Override
-    public List<GenTables> getTables(DataSource dataSource, Map<String, String> params) {
+    public List<GenTable> getTables(DataSource dataSource, Map<String, String> params) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         String queryString = TABLE_QUERY;
         List query = new ArrayList();
@@ -75,15 +75,15 @@ public class MysqlHelper implements DataSourceHelper{
                 query.add(tableName);
             }
         }
-        List<GenTables> tables =   jdbcTemplate.query(queryString,  new BeanPropertyRowMapper<>(GenTables.class),query.toArray());
+        List<GenTable> tables =   jdbcTemplate.query(queryString,  new BeanPropertyRowMapper<>(GenTable.class),query.toArray());
         return tables==null? Collections.EMPTY_LIST:tables;
     }
 
     @Override
-    public List<GenColumns> getColumns(DataSource dataSource, GenConfiguration configuration,Map<String, String> params) {
+    public List<GenColumn> getColumns(DataSource dataSource, GenConfiguration configuration, Map<String, String> params) {
         String tableName = params.get("tableName");
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        List<GenColumns> columns = jdbcTemplate.query(COLUMN_QUERY,new BeanPropertyRowMapper<>(GenColumns.class),tableName );
+        List<GenColumn> columns = jdbcTemplate.query(COLUMN_QUERY,new BeanPropertyRowMapper<>(GenColumn.class),tableName );
         return columns==null?Collections.EMPTY_LIST:columns;
     }
 

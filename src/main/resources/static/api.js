@@ -25,9 +25,27 @@ const queryTables = (params)=>{
     })
 }
 
+const queryTableColumns = (tableId)=> {
+    return axios({
+        url:`${context}/tableRest/listColumnModels?tableId=${tableId}`
+    })
+}
+
+const updateTableColumns = (columns)=> {
+    return axios({
+        url:`${context}/tableRest/updateColumns`,
+        method:'post',
+        data:{
+            columns
+        }
+    })
+}
+
 export default {
     queryTables,
     queryJavaTypes,
     queryDbTypes,
-    queryDataSources
+    queryDataSources,
+    queryTableColumns,
+    updateTableColumns
 }

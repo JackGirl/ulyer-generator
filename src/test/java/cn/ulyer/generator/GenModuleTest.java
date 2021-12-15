@@ -1,6 +1,6 @@
 package cn.ulyer.generator;
 
-import cn.ulyer.generator.model.GenJSFramework;
+import cn.ulyer.generator.model.GenModule;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class JsFrameworkTest extends UlyerGeneratorApplicationTests{
+public class GenModuleTest extends UlyerGeneratorApplicationTests{
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -24,12 +24,13 @@ public class JsFrameworkTest extends UlyerGeneratorApplicationTests{
 
     @Test
     public void initData(){
-        ClassPathResource classPathResource = new ClassPathResource("data/jsFramework.json");
+        ClassPathResource classPathResource = new ClassPathResource("data/GenModules.json");
         try (InputStream stream =  classPathResource.getInputStream()){
+            mongoTemplate.createCollection(GenModule.class);
             byte[] bytes = new byte[stream.available()];
             IOUtils.readFully(stream,bytes);
-            List<GenJSFramework> list = objectMapper.readValue(new String(bytes, StandardCharsets.UTF_8), new TypeReference<List<GenJSFramework>>(){});
-            mongoTemplate.insert(list,GenJSFramework.class);
+            List<GenModule> list = objectMapper.readValue(new String(bytes, StandardCharsets.UTF_8), new TypeReference<List<GenModule>>(){});
+            mongoTemplate.insert(list, GenModule.class);
             IOUtils.closeQuietly(stream);
         } catch (IOException e) {
             System.out.println("error read:"+e.getMessage());

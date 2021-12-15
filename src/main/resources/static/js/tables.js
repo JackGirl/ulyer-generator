@@ -1,5 +1,6 @@
 import Api from '../api.js'
 import ModifyTable from "../component/ModifyTable.js";
+import ColumnApp from '../component/Columns.js'
 const {ref, createApp, reactive, defineComponent, onMounted, nextTick} = Vue;
 const columns = [
     {
@@ -73,8 +74,15 @@ const App = defineComponent({
             searchTable()
             modifyTableVisible.value = false
         }
-        //subComponent dataSource import Table
-
+        //subComponent column
+        const columnAppVisible = ref(false);
+        const columnAppRef = ref()
+        const openColumnApp = (record)=>{
+            columnAppVisible.value = true
+            nextTick(()=>{
+                columnAppRef.value.queryColumns(record._id)
+            })
+        }
         //generator
         return {
             modifyTableVisible,
@@ -88,11 +96,15 @@ const App = defineComponent({
             searchTable,
             searchModel,
             rowSelection,
-            loading
+            loading,
+            openColumnApp,
+            columnAppVisible,
+            columnAppRef
         }
     },
     components: {
-        ModifyTable: ModifyTable
+        ModifyTable,
+        ColumnApp
     }
 
 
