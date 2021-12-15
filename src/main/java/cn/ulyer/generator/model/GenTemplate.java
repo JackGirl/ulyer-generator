@@ -11,5 +11,9 @@ public class GenTemplate {
     @Id
     private String name;
 
+    private String type;
+
     private String template;
+
+    private String nameExpression;
 }

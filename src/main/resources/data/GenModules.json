@@ -1,26 +1,12 @@
 [
   {
-    "name": "vue2",
-    "uiFrameworks": [
-      {"name":"element-ui",
-        "template": []
-      },
-      {
-        "name":  "ant-design",
-        "template": []
-      }
-    ]
+    "moduleName": "vue2_element",
+    "templates": ["vue_axios","vue2_elementUi"],
+    "group": "vue"
   },
   {
-    "name": "vue3",
-    "uiFrameworks": [
-      {"name":"element-ui",
-        "template": []
-      },
-      {
-        "name":  "ant-design",
-        "template": []
-      }
-    ]
+    "moduleName": "mybatis_plus",
+    "templates": ["mybatis_plus_mapper","mybatis_plus_service","mybatis_plus_serviceImpl","mybatis_xml"],
+    "group": "orm"
   }
 ]

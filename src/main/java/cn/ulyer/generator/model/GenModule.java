@@ -20,22 +20,11 @@ import java.util.List;
 public class GenModule {
 
     @Id
-    @JsonSerialize(using = ToStringSerializer.class)
-    private String _id;
-
     private String moduleName;
 
-    private List<ModuleTemplate> templates;
+    private List<String> templates;
 
-    @Getter
-    @Setter
-    public static final class ModuleTemplate{
-
-        private String name;
-
-        private List<String> templates;
-
-    }
+    private String group;
 
 }
 
