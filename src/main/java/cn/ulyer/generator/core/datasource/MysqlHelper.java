@@ -1,6 +1,8 @@
 package cn.ulyer.generator.core.datasource;
 
 import cn.ulyer.generator.core.GenConfiguration;
+import cn.ulyer.generator.core.property.MysqlProperty;
+import cn.ulyer.generator.core.types.DataBaseTypes;
 import cn.ulyer.generator.model.DataSourceProperty;
 import cn.ulyer.generator.model.GenColumn;
 import cn.ulyer.generator.model.GenTable;
@@ -45,17 +47,13 @@ public class MysqlHelper implements DataSourceHelper{
     @Override
     public DataSource create(DataSourceProperty dataSourceProperty) throws JsonProcessingException {
         String json = dataSourceProperty.getConnectionProperty();
-        JsonNode node = objectMapper.readTree(json);
-        String url = node.get("jdbcUrl").asText();
-        JsonNode driverNode = node.get("driver");
-        String driver = driverNode == null ? DRIVER : driverNode.asText(DRIVER);
-        String username = node.get("username").asText();
-        String password = node.get("password").asText();
+        MysqlProperty mysqlProperty = (MysqlProperty) objectMapper.readValue(json, GenConfiguration.getDbProperty(DataBaseTypes.MYSQL).getClass());
+        String driver = StringUtil.isBlank(mysqlProperty.getDriver()) ? DRIVER : mysqlProperty.getDriver();
         DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setUrl(url);
+        dataSource.setUrl(mysqlProperty.getJdbcUrl());
         dataSource.setDriverClassName(driver);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+        dataSource.setUsername(mysqlProperty.getUsername());
+        dataSource.setPassword(mysqlProperty.getPassword());
         dataSource.setMaxActive(5);
         dataSource.setDbType(DbType.mysql);
         return dataSource;

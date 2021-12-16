@@ -3,7 +3,10 @@ package cn.ulyer.generator.core;
 import cn.ulyer.generator.core.datasource.DataSourceHelper;
 import cn.ulyer.generator.core.datasource.MysqlHelper;
 import cn.ulyer.generator.core.datasource.OracleHelper;
-import cn.ulyer.generator.core.enums.DataBaseTypes;
+import cn.ulyer.generator.core.property.DbProperty;
+import cn.ulyer.generator.core.property.MysqlProperty;
+import cn.ulyer.generator.core.property.OracleProperty;
+import cn.ulyer.generator.core.types.DataBaseTypes;
 import cn.ulyer.generator.core.gen.DefaultTemplateJavaGenerator;
 import cn.ulyer.generator.core.gen.DefaultTemplateUIGenerator;
 import cn.ulyer.generator.core.gen.JavaGenerator;
@@ -24,6 +27,8 @@ public class GenConfiguration {
 
     private static Map<DataBaseTypes, DataSourceHelper> DATA_SOURCE_HELPER_MAP;
 
+    private final static Map<DataBaseTypes,DbProperty> DB_PROPERTY_TYPE = new HashMap<>();
+
     private final static Map<String,Class<?>> typeConvertMap = new ConcurrentHashMap<>(128);
 
     private JavaGenerator javaGenerator = new DefaultTemplateJavaGenerator();
@@ -36,6 +41,12 @@ public class GenConfiguration {
     static {
         initDataSourceHelper();
         registerConvert();
+        registerDbProperty();
+    }
+
+    private static void registerDbProperty() {
+        DB_PROPERTY_TYPE.put(DataBaseTypes.MYSQL,new MysqlProperty());
+        DB_PROPERTY_TYPE.put(DataBaseTypes.ORACLE,new OracleProperty());
     }
 
     private static void registerConvert() {
@@ -79,6 +90,10 @@ public class GenConfiguration {
             throw new NullPointerException("retrieve datasourceHelper got null types:"+types.name());
         }
         return dataSourceHelper;
+    }
+
+    public static DbProperty getDbProperty(DataBaseTypes types){
+        return DB_PROPERTY_TYPE.get(types);
     }
 
     public void registerConvert(String name,Class<?> clazz){

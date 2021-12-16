@@ -13,42 +13,49 @@
     .search-container{
         margin-bottom: 20px;
     }
+    .container{
+        margin:0 auto;
+        width:80%
+    }
 </style>
 <body>
 <div id="app">
-    <div class="search-container">
-        <a-form
-                ref="formRef"
-                layout="inline"
-                :model="searchModel">
-            <a-form-item label="表名">
-                <a-input v-model:value="searchModel.tableName" placeholder="tableName">
-                </a-input>
-            </a-form-item>
-            <a-form-item>
-                <a-select style="width:200px" v-model:value="searchModel.dataSourceId">
-                    <a-select-option value="">所有</a-select-option>
-                    <a-select-option v-for="dataSource in dataSources" :key="dataSource._id">{{dataSource.name}}</a-select-option>
-                </a-select>
-            </a-form-item>
-            <a-form-item>
-                <a-space>
-                    <a-button type="primary" @click="searchTable">查询</a-button>
-                    <a-button type="default">生成</a-button>
-                    <a-button type="default" @click="()=>{importTableVisible = true}">导入</a-button>
-                    <a-button type="primary">数据源</a-button>
-                    <a-button type="primary">模板配置</a-button>
-                </a-space>
-            </a-form-item>
-        </a-form>
+    <div class="container">
+        <div class="search-container">
+            <a-form
+                    ref="formRef"
+                    layout="inline"
+                    :model="searchModel">
+                <a-form-item label="表名">
+                    <a-input v-model:value="searchModel.tableName" placeholder="tableName">
+                    </a-input>
+                </a-form-item>
+                <a-form-item>
+                    <a-select style="width:200px" v-model:value="searchModel.dataSourceId">
+                        <a-select-option value="">所有</a-select-option>
+                        <a-select-option v-for="dataSource in dataSources" :key="dataSource._id">{{dataSource.name}}</a-select-option>
+                    </a-select>
+                </a-form-item>
+                <a-form-item>
+                    <a-space>
+                        <a-button type="primary" @click="searchTable">查询</a-button>
+                        <a-button type="default">生成</a-button>
+                        <a-button type="default" @click="()=>{importTableVisible = true}">导入</a-button>
+                        <a-button type="primary" @click="routerToDataSource">数据源配置</a-button>
+                        <a-button type="primary" @click="routerToTemplate">模板配置</a-button>
+                    </a-space>
+                </a-form-item>
+            </a-form>
+        </div>
+        <a-table :pagination="false" :loading="loading" :row-key="(record)=>record._id" :row-selection="rowSelection" style="min-height: 400px" :data-source="tables" :columns="columns">
+            <template #action="{record}">
+                <a-button type="text" danger @click="openFormVisible(record)">修改</a-button>
+                <a-button type="text"  danger @click="openColumnApp(record)">编辑字段</a-button>
+                <a-button type="text"  danger @click="removeTable(record)">删除</a-button>
+            </template>
+        </a-table>
     </div>
-    <a-table :pagination="false" :loading="loading" :row-key="(record)=>record._id" :row-selection="rowSelection" style="min-height: 400px" :data-source="tables" :columns="columns">
-        <template #action="{record}">
-            <a-button type="text" danger @click="openFormVisible(record)">修改</a-button>
-            <a-button type="text"  danger @click="openColumnApp(record)">编辑字段</a-button>
-            <a-button type="text"  danger @click="removeTable(record)">删除</a-button>
-        </template>
-    </a-table>
+
     <a-modal v-model:visible="modifyTableVisible" title="修改" footer="" width="30%">
         <modify-table ref="modifyTableRef" @success="onSuccessUpdate"></modify-table>
     </a-modal>

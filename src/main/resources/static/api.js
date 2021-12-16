@@ -1,7 +1,13 @@
-
+/***
+ *
+ * ================================
+ * types 相关
+ * ===============================
+ *
+ */
 const queryDbTypes = ()=>{
     return axios({
-        url:`${context}/types/dbTyes`
+        url:`${context}/types/dbTypes`
     })
 }
 
@@ -10,12 +16,42 @@ const queryJavaTypes = () => {
         url:`${context}/types/javaTypes`
     })
 }
-
-const queryDataSources = ()=>{
+/***
+ *
+ * ================================
+ * dataSource 相关
+ * ===============================
+ *
+ */
+const saveOrUpdateDataSource = (dataSource)=>{
     return axios({
-        url:`${context}/dataSourceRest/listDataSource`
+        url:`${context}/dataSourceRest/saveOrUpdate`,
+        data:dataSource,
+        method:'post'
     })
 }
+
+const removeDataSource = (dataSourceId)=>{
+    return axios({
+        url:`${context}/dataSourceRest/remove/${dataSourceId}`,
+        method:'delete'
+    })
+}
+
+const queryDataSources = (params)=>{
+    return axios({
+        url:`${context}/dataSourceRest/listDataSource`,
+        params
+    })
+}
+/***
+ *
+ * ================================
+ * table 相关
+ * ===============================
+ *
+ */
+
 /**
  * 查询真实数据库表
  * @param dataSourceId
@@ -61,6 +97,36 @@ const removeTableById = (tableId)=> {
     })
 }
 
+/***
+ *
+ * ================================
+ * template  相关
+ * ===============================
+ *
+ */
+const listTemplates = (params)=>{
+    return axios({
+        url:`${context}/templateRest/list`,
+        params
+    })
+}
+
+/***
+ *
+ * ================================
+ * module  相关
+ * ===============================
+ *
+ */
+
+const listModules = (params)=>{
+    return axios({
+        url:`${context}/moduleRest/list`,
+        params
+    })
+}
+
+
 export default {
     queryGenTables,
     queryJavaTypes,
@@ -69,5 +135,9 @@ export default {
     queryTableColumns,
     updateTableColumns,
     removeTableById,
-    queryDbTables
+    queryDbTables,
+    saveOrUpdateDataSource,
+    removeDataSource,
+    listModules,
+    listTemplates
 }

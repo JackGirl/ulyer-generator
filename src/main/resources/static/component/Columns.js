@@ -103,22 +103,12 @@ const Column = defineComponent({
             })
         }
         const removeColumns = (row)=>{
-            antd.Modal.confirm({
-                title:'提示',
-                content:'删除后点击保存即可彻底删除',
-                onOk:()=>{
-                    return new Promise(resolver=>{
-                        dataSource.value = dataSource.filter(record=>record._id===row._id)
-                        resolver()
-                    })
-                }
-            })
+            dataSource.value = dataSource.filter(record=>record._id===row._id)
         }
         const saveColumns = () =>{
-           /* Api.updateTableColumns(dataSource).then(res=>{
-                antd.message.success("已更新")
-            })*/
-            console.info(dataSource)
+            Api.updateTableColumns(dataSource.value).then(res=>{
+                antd.message.success(res.data)
+            })
         }
 
         //javaTypes

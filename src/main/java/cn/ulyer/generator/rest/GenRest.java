@@ -2,7 +2,7 @@ package cn.ulyer.generator.rest;
 
 import cn.ulyer.generator.core.GenConfiguration;
 import cn.ulyer.generator.core.datasource.DataSourceHelper;
-import cn.ulyer.generator.core.enums.DataBaseTypes;
+import cn.ulyer.generator.core.types.DataBaseTypes;
 import cn.ulyer.generator.model.DataSourceProperty;
 import cn.ulyer.generator.model.GenColumn;
 import cn.ulyer.generator.model.GenTable;

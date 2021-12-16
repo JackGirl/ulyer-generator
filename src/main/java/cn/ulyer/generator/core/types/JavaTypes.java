@@ -1,4 +1,4 @@
-package cn.ulyer.generator.core.enums;
+package cn.ulyer.generator.core.types;
 
 import lombok.Getter;
 

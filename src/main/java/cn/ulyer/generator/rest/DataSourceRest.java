@@ -3,10 +3,11 @@ package cn.ulyer.generator.rest;
 
 import cn.ulyer.generator.core.GenConfiguration;
 import cn.ulyer.generator.core.datasource.DataSourceHelper;
-import cn.ulyer.generator.core.enums.DataBaseTypes;
+import cn.ulyer.generator.core.types.DataBaseTypes;
 import cn.ulyer.generator.model.DataSourceProperty;
 import cn.ulyer.generator.model.GenTable;
 import cn.ulyer.generator.util.StringUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -34,6 +36,9 @@ public class DataSourceRest {
     private GenConfiguration genConfiguration;
 
     public final static String NAME = "DataSourceRest";
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * 数据源配置
@@ -56,10 +61,16 @@ public class DataSourceRest {
      * @param dataSourceProperty
      * @return
      */
-    @PostMapping("/addDataSourceConfig")
-    public boolean add(@RequestBody DataSourceProperty dataSourceProperty){
+    @PostMapping("/saveOrUpdate")
+    public String add(@RequestBody DataSourceProperty dataSourceProperty){
+        try{
+            Map<String,Object> json = objectMapper.readValue(dataSourceProperty.getConnectionProperty(), Map.class);
+            System.out.println(json);
+        }catch (Exception e){
+            return "json parse error:"+e.getMessage();
+        }
         mongoTemplate.save(dataSourceProperty);
-        return true;
+        return "SUCCESS";
     }
 
     /**
@@ -69,7 +80,7 @@ public class DataSourceRest {
      */
     @DeleteMapping("/remove/{id}")
     public boolean remove(@PathVariable String id){
-        mongoTemplate.remove(Query.query(Criteria.where("_id").is(id)));
+        mongoTemplate.remove(Query.query(Criteria.where("_id").is(id)),DataSourceProperty.class);
         return true;
     }
 

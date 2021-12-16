@@ -1,5 +1,8 @@
 package cn.ulyer.generator.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * @author ulyer
  * @date 2021.12.13
@@ -48,5 +51,18 @@ public class StringUtil {
 
     public static boolean contains(String str,char c){
         return str != null && str.indexOf(c, 0) != -1;
+    }
+
+    private final static ObjectMapper objectMapper = new ObjectMapper();
+
+    public static String toJson(Object obj,boolean pretty){
+        try {
+            if(pretty){
+                return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+            }
+            return objectMapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

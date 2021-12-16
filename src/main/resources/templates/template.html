@@ -2,9 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <#include "common/lib.html">
+    <script type="module" src="${contextPath!}/static/js/template.js"></script>
     <title>模板配置</title>
 </head>
+<style>
+    #app{
+        padding: 40px;
+    }
+    .container{
+        width: 80%;
+        margin: 0 auto;
+    }
+</style>
 <body>
-
+<div id="app">
+    <a-row>
+        <a-col offset="2" span="6">
+            <!--模块-->
+            <a-list :loading="moduleLoading" :data-source="modules">
+                <template #renderItem="{ item }">
+                    <a-list-item>
+                        <template #actions>
+                            <a-button type="primary">UPDATE</a-button>
+                            <a-button type="danger">DELETE</a-button>
+                        </template>
+                        <a-list-item-meta :description="item.templates+''">
+                            <template #title>
+                                <h3>{{item.moduleName}}</h3>
+                            </template>
+                        </a-list-item-meta>
+                    </a-list-item>
+                </template>
+            </a-list>
+        </a-col>
+        <a-col span="14">
+            <!--模块文件-->
+            <a-list :loading="templateLoading" :data-source="templates">
+                <template #renderItem="{ item }">
+                    <a-list-item>
+                        <template #actions>
+                            <a-button type="primary">UPDATE</a-button>
+                            <a-button type="danger">DELETE</a-button>
+                        </template>
+                        <a-list-item-meta :description="'名称生成规则'+item.nameExpression+'   文件类型:'+ item.type ">
+                            <template #title>
+                                <h3>{{item.name}}</h3>
+                            </template>
+                        </a-list-item-meta>
+                    </a-list-item>
+                </template>
+            </a-list>
+        </a-col>
+    </a-row>
+</div>
 </body>
 </html>

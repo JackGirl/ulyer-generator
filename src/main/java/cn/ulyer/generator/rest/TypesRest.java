@@ -1,9 +1,11 @@
 package cn.ulyer.generator.rest;
 
 
-import cn.ulyer.generator.core.enums.DataBaseTypes;
-import cn.ulyer.generator.core.enums.JavaTypes;
+import cn.ulyer.generator.core.GenConfiguration;
+import cn.ulyer.generator.core.types.DataBaseTypes;
+import cn.ulyer.generator.core.types.JavaTypes;
 import cn.ulyer.generator.model.GenModule;
+import cn.ulyer.generator.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.util.CollectionUtils;
@@ -48,8 +50,13 @@ public class TypesRest {
      * @return
      */
     @GetMapping("/dbTypes")
-    public List<DataBaseTypes> dataBaseTypes(){
-        return Arrays.asList(DataBaseTypes.values());
+    public List<Map<String,String>> dataBaseTypes(){
+        return Arrays.stream(DataBaseTypes.values()).map(value->{
+            Map<String,String> data = new HashMap<>();
+            data.put("type",value.name());
+            data.put("propertyJson", StringUtil.toJson(GenConfiguration.getDbProperty(DataBaseTypes.MYSQL),true));
+            return data;
+        }).collect(Collectors.toList());
     }
 
     /**

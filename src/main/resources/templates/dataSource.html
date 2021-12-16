@@ -2,9 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <#include "common/lib.html">
+    <script type="module" src="${contextPath!}/static/js/dataSource.js"></script>
+    <title>数据源配置</title>
 </head>
+<style>
+    #app {
+        padding: 40px;
+    }
+</style>
 <body>
+<div id="app">
+    <a-row style="width:80%;margin:0 auto" :gutter="16" >
+            <a-col  span="6">
+                <a-form :model="searchModel" >
+                    <a-form-item label="数据源名称">
+                        <a-input v-model:value="searchModel.name"/>
+                    </a-form-item>
+                    <a-form-item label="数据源类型">
+                        <a-select v-model:value="searchModel.type">
+                            <a-select-option value="">所有</a-select-option>
+                            <a-select-option v-for="db in dbTypes" :value="db.type">{{db.type}}</a-select-option>
+                        </a-select>
+                    </a-form-item>
+                    <a-form-item>
+                        <a-space>
+                            <a-button @click="queryDataSource">查询</a-button>
+                            <a-button @click="openCreate" type="primary">新增</a-button>
+                            <a-button @click="routerToTablePage" type="primary">返回生成界面</a-button>
+                        </a-space>
+                    </a-form-item>
+                </a-form>
+            </a-col>
+            <a-col span="18">
+                <a-table :loading="loading" :pagination="false" :data-source="dataSources" :row-key="record=>record._id" :columns="columns">
+                    <template #action="{record}">
+                        <a-button @click="removeDataSource(record)" type="danger" >删除</a-button>
+                    </template>
+                </a-table>
+            </a-col>
+    </a-row>
+
+    <a-modal width="30%" footer="" v-model:visible="createVisible" >
+        <div style="padding: 40px">
+            <a-form :model="createModel" ref="createFormRef">
+                <a-form-item :rules="[{required:true,message:'必填'}]" label="数据源名称" name="name">
+                    <a-input  v-model:value="createModel.name"/>
+                </a-form-item>
+                <a-form-item :rules="[{required:true,message:'必选'}]"  label="数据源名称" name="type">
+                    <a-select @change="fillPropertyJson" v-model:value="createModel.type">
+                        <a-select-option v-for="db in dbTypes" :value="db.type">{{db.type}}</a-select-option>
+                    </a-select>
+                </a-form-item>
+                <a-form-item :rules="[{required:true,message:'必填'}]" label="链接属性(json)" name="connectionProperty">
+                    <a-textarea :rows="5" v-model:value="createModel.connectionProperty" />
+                </a-form-item>
+                <a-form-item >
+                    <a-button @click="submitCreate" type="primary">提交</a-button>
+                </a-form-item>
+            </a-form>
+        </div>
+    </a-modal>
+
+
+</div>
 
 </body>
 </html>

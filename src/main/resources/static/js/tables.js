@@ -118,7 +118,9 @@ const App = defineComponent({
             columnAppVisible,
             columnAppRef,
             importTableRef,
-            importTableVisible
+            importTableVisible,
+            routerToDataSource:()=>{window.location.href = `${context}/page/dataSource`},
+            routerToTemplate:()=>{window.location.href = `${context}/page/template`},
         }
     }
 
