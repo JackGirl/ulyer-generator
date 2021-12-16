@@ -7,52 +7,55 @@
     <title>模板配置</title>
 </head>
 <style>
-    #app{
+    #app {
         padding: 40px;
     }
-    .container{
-        width: 80%;
-        margin: 0 auto;
+
+    .card {
+        margin-top: 5px;
     }
 </style>
 <body>
 <div id="app">
-    <a-row>
-        <a-col offset="2" span="6">
-            <!--模块-->
-            <a-list :loading="moduleLoading" :data-source="modules">
-                <template #renderItem="{ item }">
-                    <a-list-item>
-                        <template #actions>
-                            <a-button type="primary">UPDATE</a-button>
-                            <a-button type="danger">DELETE</a-button>
-                        </template>
-                        <a-list-item-meta :description="item.templates+''">
-                            <template #title>
-                                <h3>{{item.moduleName}}</h3>
-                            </template>
-                        </a-list-item-meta>
-                    </a-list-item>
-                </template>
-            </a-list>
+    <a-row style="margin-bottom: 40px">
+        <a-col span="8" offset="4">
+            名称模块:<a-input style="width:200px"></a-input>
+            分组过滤:<a-input style="width:200px" ></a-input>
         </a-col>
-        <a-col span="14">
-            <!--模块文件-->
-            <a-list :loading="templateLoading" :data-source="templates">
-                <template #renderItem="{ item }">
-                    <a-list-item>
-                        <template #actions>
-                            <a-button type="primary">UPDATE</a-button>
-                            <a-button type="danger">DELETE</a-button>
+        <a-col span="8">
+            名称过滤:<a-input style="width:300px" />
+        </a-col>
+    </a-row>
+    <a-row :gutter="10">
+        <a-col offset="4" span="8">
+            <a-row :gutter="[10,10]">
+                <a-col v-for="module in modules" span="12">
+                    <a-card hoverable  style="width: 280px">
+                        <template #title>
+                            <h3 style="color: #108ee9">{{module.moduleName}}</h3>
                         </template>
-                        <a-list-item-meta :description="'名称生成规则'+item.nameExpression+'   文件类型:'+ item.type ">
-                            <template #title>
-                                <h3>{{item.name}}</h3>
-                            </template>
-                        </a-list-item-meta>
-                    </a-list-item>
+                        <a-tag color="#108ee9" style="margin-top: 3px" v-for="tag in module.templates">{{tag}}</a-tag>
+                        <template #actions>
+                            <a-button type="text" style="color: #108ee9">UPDATE</a-button>
+                            <a-button type="text" danger>DELETE</a-button>
+                        </template>
+                    </a-card>
+                </a-col>
+            </a-row>
+
+        </a-col>
+        <a-col span="8">
+            <a-card class="card" v-for="template in templates">
+                <template #title>
+                    <h3 style="color: #108ee9">模板:{{template.name}}</h3>
                 </template>
-            </a-list>
+                <template #extra>
+                    <a-button style="color: #108ee9;font-size: 16px" type="text">UPDATE</a-button>
+                    <a-button style="font-size: 16px" danger type="text">DELETE</a-button>
+                </template>
+                <p>文件名生成规则:&nbsp;&nbsp;&nbsp;<span style="font-size: 20px;color:#f50">{{template.nameExpression}}</span></p>
+                <p>文件类型:&nbsp;&nbsp;&nbsp;<span style="font-size: 20px;color:#f50">{{template.type}}</span> </p>
+            </a-card>
         </a-col>
     </a-row>
 </div>

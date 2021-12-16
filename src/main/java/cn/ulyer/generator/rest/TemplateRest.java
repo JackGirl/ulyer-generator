@@ -25,7 +25,7 @@ public class TemplateRest {
 
     @GetMapping("/list")
     public List<GenTemplate> list(){
-        return null;
+        return mongoTemplate.findAll(GenTemplate.class);
     }
 
 

@@ -12,10 +12,14 @@ const Template = defineComponent({
             Api.listModules(moduleSearchModel).then(res=>{
                 modules.value = res.data
             })
+            moduleLoading.value = false
         }
         onMounted(()=>{
             queryModules()
         })
+        const filterModule = ()=>{
+
+        }
         //template
         const templateLoading = ref(false)
         const templates = ref([])
@@ -30,15 +34,21 @@ const Template = defineComponent({
         onMounted(()=>{
             templateQuery()
         })
+        const filterTemplate = ()=>{
+
+        }
         return{
             moduleLoading,
             modules,
             moduleSearchModel,
             queryModules,
+            filterModule,
             templateLoading,
             templates,
             templateSearchModel,
-            templateQuery
+            templateQuery,
+            filterTemplate,
+            routerToTablePage:()=>{window.location.href=`${context}/page/tables`}
         }
     }
 })
