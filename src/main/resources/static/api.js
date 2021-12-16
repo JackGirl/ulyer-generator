@@ -111,6 +111,14 @@ const listTemplates = (params)=>{
     })
 }
 
+const removeTemplate = (templateName)=>{
+    return axios({
+        url:`${context}/templateRest/remove`,
+        params:{
+            name
+        }
+    })
+}
 /***
  *
  * ================================
@@ -123,6 +131,13 @@ const listModules = (params)=>{
     return axios({
         url:`${context}/moduleRest/list`,
         params
+    })
+}
+const removeModule = (moduleName)=>{
+    return axios({
+        url:`${context}/moduleRest/remove`,
+        method:'delete',
+        params:{moduleName}
     })
 }
 
@@ -139,5 +154,6 @@ export default {
     saveOrUpdateDataSource,
     removeDataSource,
     listModules,
-    listTemplates
+    listTemplates,
+    removeModule
 }

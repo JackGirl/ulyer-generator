@@ -60,10 +60,20 @@ const App = defineComponent({
             }
         }
         const removeTable = (record) => {
-            Api.removeTableById(record._id).then(res => {
-                ant.message.success("remove success")
-                searchTable()
+            antd.Modal.confirm({
+                title:'提示',
+                content:'确认删除?',
+                onOk:()=>{
+                    return new Promise(resolve => {
+                        Api.removeTableById(record._id).then(res => {
+                            antd.message.success("remove success")
+                            searchTable()
+                        })
+                        resolve()
+                    })
+                }
             })
+
         }
         //datasource
         const dataSources = ref([])

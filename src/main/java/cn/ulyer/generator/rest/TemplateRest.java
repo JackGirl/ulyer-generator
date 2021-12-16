@@ -1,6 +1,7 @@
 package cn.ulyer.generator.rest;
 
 import cn.ulyer.generator.model.GenTemplate;
+import cn.ulyer.generator.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -24,8 +25,12 @@ public class TemplateRest {
     private MongoTemplate mongoTemplate;
 
     @GetMapping("/list")
-    public List<GenTemplate> list(){
-        return mongoTemplate.findAll(GenTemplate.class);
+    public List<GenTemplate> list(String name){
+        Query query = new Query();
+        if(!StringUtil.isBlank(name)){
+            query.addCriteria(Criteria.where("name").regex(".*"+name+".*"));
+        }
+        return mongoTemplate.find(query,GenTemplate.class);
     }
 
 

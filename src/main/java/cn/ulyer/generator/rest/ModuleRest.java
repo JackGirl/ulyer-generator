@@ -26,7 +26,7 @@ public class ModuleRest {
     public List<GenModule> list(String moduleName,String group){
         Query query = new Query();
         if(!StringUtil.isBlank(moduleName)){
-            query.addCriteria(Criteria.where("moduleName").is(moduleName));
+            query.addCriteria(Criteria.where("moduleName").regex(".*"+moduleName+".*"));
         }
         if(!StringUtil.isBlank(group)){
             query.addCriteria(Criteria.where("group").is(group));

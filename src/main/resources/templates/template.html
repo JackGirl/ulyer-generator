@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="${contextPath!}/static/lib/codemirror/codemirror.css">
+    <link rel="stylesheet" href="${contextPath!}/static/lib/codemirror/theme/darcula.css">
     <#include "common/lib.html">
     <script type="module" src="${contextPath!}/static/js/template.js"></script>
     <title>模板配置</title>
@@ -12,18 +14,20 @@
     }
 
     .card {
-        margin-top: 5px;
+        margin-bottom: 10px;
     }
 </style>
 <body>
 <div id="app">
     <a-row style="margin-bottom: 40px">
         <a-col span="8" offset="4">
-            名称模块:<a-input style="width:200px"></a-input>
-            分组过滤:<a-input style="width:200px" ></a-input>
+            名称:<a-input @change="queryModules" v-model:value="moduleSearchModel.moduleName" style="width:190px"></a-input>
+            分组:<a-input @change="queryModules" v-model:value="moduleSearchModel.group" style="width:190px" ></a-input>
+            <a-button type="primary" @click="openModuleForm(null)">新增</a-button>
         </a-col>
         <a-col span="8">
-            名称过滤:<a-input style="width:300px" />
+            名称过滤:<a-input style="width:300px" @change="templateQuery" v-model:value="templateSearchModel.name"></a-input>
+            <a-button type="primary"  @click="openTemplateForm(null)">新增</a-button>
         </a-col>
     </a-row>
     <a-row :gutter="10">
@@ -32,12 +36,13 @@
                 <a-col v-for="module in modules" span="12">
                     <a-card hoverable  style="width: 280px">
                         <template #title>
-                            <h3 style="color: #108ee9">{{module.moduleName}}</h3>
+                            <h3 style="color: #108ee9">{{module.moduleName}} </h3>
                         </template>
+                        <p><span style="color:firebrick;font-size: 18px">分组:{{module.group}}</span>    </p>
                         <a-tag color="#108ee9" style="margin-top: 3px" v-for="tag in module.templates">{{tag}}</a-tag>
                         <template #actions>
-                            <a-button type="text" style="color: #108ee9">UPDATE</a-button>
-                            <a-button type="text" danger>DELETE</a-button>
+                            <a-button type="text" style="color: #108ee9" @click="openModuleForm">UPDATE</a-button>
+                            <a-button type="text" danger @click="removeModules(module)">DELETE</a-button>
                         </template>
                     </a-card>
                 </a-col>
@@ -50,14 +55,37 @@
                     <h3 style="color: #108ee9">模板:{{template.name}}</h3>
                 </template>
                 <template #extra>
-                    <a-button style="color: #108ee9;font-size: 16px" type="text">UPDATE</a-button>
-                    <a-button style="font-size: 16px" danger type="text">DELETE</a-button>
+                    <a-button style="color: #108ee9;font-size: 16px" type="text" @click="openTemplateForm(template)">UPDATE</a-button>
+                    <a-button style="font-size: 16px" danger type="text"  @click="removeTemplate(template)">DELETE</a-button>
                 </template>
                 <p>文件名生成规则:&nbsp;&nbsp;&nbsp;<span style="font-size: 20px;color:#f50">{{template.nameExpression}}</span></p>
                 <p>文件类型:&nbsp;&nbsp;&nbsp;<span style="font-size: 20px;color:#f50">{{template.type}}</span> </p>
             </a-card>
         </a-col>
     </a-row>
+
+    <!----添加修改模块--->
+    <a-modal title="模块" v-model:visible="moduleVisible" width="30%">
+        <div style="padding: 20px">
+            <a-form :model="moduleFormModel" ref="moduleFormRef">
+
+            </a-form>
+        </div>
+    </a-modal>
+    <!--添加修改模板-->
+    <a-modal v-model:visible="templateVisible" title="模板" width="70%">
+        <div style="padding: 20px">
+            <a-form ref="templateFormRef" :model="templateFormModel">
+                <a-form-item>
+                    <textarea  id="code" name="code"></textarea>
+                </a-form-item>
+            </a-form>
+        </div>
+    </a-modal>
 </div>
+<script src="${contextPath!}/static/lib/codemirror/codemirror.js"></script>
+<script src="${contextPath!}/static/lib/codemirror/mode/javascript.js"></script>
+<script src="${contextPath!}/static/lib/codemirror/addon/selection/active-line.js"></script>
+
 </body>
 </html>

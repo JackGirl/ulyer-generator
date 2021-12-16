@@ -103,7 +103,7 @@ const Column = defineComponent({
             })
         }
         const removeColumns = (row)=>{
-            dataSource.value = dataSource.filter(record=>record._id===row._id)
+            dataSource.value = dataSource.value.filter(record=>record._id===row._id)
         }
         const saveColumns = () =>{
             Api.updateTableColumns(dataSource.value).then(res=>{
