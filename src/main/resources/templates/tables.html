@@ -39,7 +39,7 @@
                 <a-form-item>
                     <a-space>
                         <a-button type="primary" @click="searchTable">查询</a-button>
-                        <a-button type="default">生成</a-button>
+                        <a-button type="default" @click="openGenerator">生成</a-button>
                         <a-button type="default" @click="()=>{importTableVisible = true}">导入</a-button>
                         <a-button type="primary" @click="routerToDataSource">数据源配置</a-button>
                         <a-button type="primary" @click="routerToTemplate">模板配置</a-button>
@@ -60,7 +60,7 @@
         <modify-table ref="modifyTableRef" @success="onSuccessUpdate"></modify-table>
     </a-modal>
     <a-drawer
-            :maskClosable="false"
+            :mask-closable="false"
             title="update column"
             :width="1200"
             v-model:visible="columnAppVisible"
@@ -68,13 +68,18 @@
         <column-app ref="columnAppRef"></column-app>
     </a-drawer>
     <a-drawer
-            :maskClosable="false"
+            :mask-closable="false"
             title="import table"
             :width="500"
             v-model:visible="importTableVisible"
             :body-style="{ paddingBottom: '80px' }">
         <import-table ref="importTableRef" @success="searchTable" :data-sources="dataSources"></import-table>
     </a-drawer>
+    <a-modal v-model:visible="generatorVisible" :mask-closable="false" width="70%" title="代码生成" footer="">
+        <div style="padding:40px">
+            <generator ref="generatorRef"></generator>
+        </div>
+    </a-modal>
 </div>
 </body>
 </html>

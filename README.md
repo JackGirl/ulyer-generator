@@ -10,3 +10,4 @@
 |axios|axios http请求|
 |context|web容器上下文 js中使用|
 |contextPath|freemaker容器上下文|
+|CodeMirror|codemirror.js 代码编辑器 全局对象|

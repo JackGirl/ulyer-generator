@@ -17,3 +17,18 @@ export const resetForm = (ref)=>{
         ref.value.resetFields()
     }
 }
+
+export const groupArray = (array,key) => {
+    const groups = {}
+    if(!array){
+        return groups
+    }
+    array.forEach(item=>{
+        if(groups[item[key]]){
+            groups[item[key]].push(item)
+        }else{
+            groups[item[key]] = [item]
+        }
+    })
+    return groups;
+}

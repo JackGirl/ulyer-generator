@@ -3,17 +3,10 @@ package cn.ulyer.generator.core;
 import cn.ulyer.generator.core.datasource.DataSourceHelper;
 import cn.ulyer.generator.core.datasource.MysqlHelper;
 import cn.ulyer.generator.core.datasource.OracleHelper;
-import cn.ulyer.generator.core.property.DbProperty;
-import cn.ulyer.generator.core.property.MysqlProperty;
-import cn.ulyer.generator.core.property.OracleProperty;
+import cn.ulyer.generator.core.gen.FreeMakerGenerator;
+import cn.ulyer.generator.core.gen.TemplateGenerator;
 import cn.ulyer.generator.core.types.DataBaseTypes;
-import cn.ulyer.generator.core.gen.DefaultTemplateJavaGenerator;
-import cn.ulyer.generator.core.gen.DefaultTemplateUIGenerator;
-import cn.ulyer.generator.core.gen.JavaGenerator;
-import cn.ulyer.generator.core.gen.ViewUIGenerator;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,15 +20,10 @@ public class GenConfiguration {
 
     private static Map<DataBaseTypes, DataSourceHelper> DATA_SOURCE_HELPER_MAP;
 
-
     private final static Map<String,Class<?>> typeConvertMap = new ConcurrentHashMap<>(128);
 
-    private JavaGenerator javaGenerator = new DefaultTemplateJavaGenerator();
 
-    private ViewUIGenerator viewUIGenerator = new DefaultTemplateUIGenerator();
-
-    @Resource
-    private MongoTemplate mongoTemplate;
+    private TemplateGenerator templateGenerator = new FreeMakerGenerator();
 
     static {
         initDataSourceHelper();
@@ -95,19 +83,13 @@ public class GenConfiguration {
         return typeConvertMap.get(name.toUpperCase(Locale.ROOT));
     }
 
-    public JavaGenerator getJavaGenerator() {
-        return javaGenerator;
+    public TemplateGenerator getTemplateGenerator() {
+        return templateGenerator;
     }
 
-    public void setJavaGenerator(JavaGenerator javaGenerator) {
-        this.javaGenerator = javaGenerator;
+    public void setJavaGenerator(TemplateGenerator templateGenerator) {
+        this.templateGenerator = templateGenerator;
     }
 
-    public ViewUIGenerator getViewUIGenerator() {
-        return viewUIGenerator;
-    }
 
-    public void setViewUIGenerator(ViewUIGenerator viewUIGenerator) {
-        this.viewUIGenerator = viewUIGenerator;
-    }
 }

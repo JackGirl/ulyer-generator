@@ -1,6 +1,6 @@
 package cn.ulyer.generator.util;
 
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * @author ulyer
@@ -16,6 +16,20 @@ public class ArrayUtil {
             builder.append(next).append(join);
         }
         return builder.substring(0,builder.length()-1);
+    }
+
+    public static <T> List<T> acceptNonNull(T ...elements){
+        if(elements==null){
+            return new ArrayList<>();
+        }
+        return Arrays.asList(elements);
+    }
+
+    public static <T> List<T> acceptNonNull(List<T> list){
+        if(list==null){
+            return Collections.EMPTY_LIST;
+        }
+        return list;
     }
 
 }

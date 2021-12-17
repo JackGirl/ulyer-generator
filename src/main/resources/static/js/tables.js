@@ -2,7 +2,7 @@ import Api from '../api.js'
 import ModifyTable from "../component/ModifyTable.js";
 import ColumnApp from '../component/Columns.js'
 import ImportTable from "../component/ImportTable.js";
-
+import Generator from "../component/Generator.js";
 const {ref, createApp, reactive, defineComponent, onMounted, nextTick} = Vue;
 const columns = [
     {
@@ -36,9 +36,11 @@ const App = defineComponent({
     components: {
         ModifyTable,
         ColumnApp,
+        Generator,
         ImportTable
     },
     setup() {
+        const selectedKeys = ref([])
         //search and table
         const tables = ref([])
         const searchModel = reactive({tableName: '', dataSourceId: ''});
@@ -56,7 +58,7 @@ const App = defineComponent({
         })
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                selectedKeys.value = selectedRowKeys
             }
         }
         const removeTable = (record) => {
@@ -109,7 +111,18 @@ const App = defineComponent({
         //subComponent pop importTable
         const importTableRef = ref()
         const importTableVisible = ref(false)
+
         //generator
+        const generatorVisible = ref(false)
+        const generatorRef = ref()
+        const openGenerator = ()=>{
+            generatorVisible.value = true
+            //setTables
+            nextTick(()=>{
+                generatorRef.value.setTables(selectedKeys.value)
+            })
+        }
+
         return {
             modifyTableVisible,
             modifyTableRef,
@@ -131,6 +144,9 @@ const App = defineComponent({
             importTableVisible,
             routerToDataSource:()=>{window.location.href = `${context}/page/dataSource`},
             routerToTemplate:()=>{window.location.href = `${context}/page/template`},
+            generatorRef,
+            generatorVisible,
+            openGenerator
         }
     }
 

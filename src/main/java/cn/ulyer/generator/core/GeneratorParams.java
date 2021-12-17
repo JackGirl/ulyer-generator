@@ -1,9 +1,10 @@
 package cn.ulyer.generator.core;
 
-import cn.ulyer.generator.model.GenModule;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ulyer
@@ -13,12 +14,15 @@ import java.util.List;
 @Data
 public class GeneratorParams {
 
-    private List<GenModule> genModules;
+    @NotBlank(message = "生成模块必填")
+    private List<String> genModules;
 
-    private String basePackage;
+    private String basePackage = "";
 
-    private String author = "ulyer-generator";
+    private String author;
 
-    private List<String> genTableIds;
+    private List<String> genTables;
+
+    private Map<String,?> extendsVariables;
 
 }

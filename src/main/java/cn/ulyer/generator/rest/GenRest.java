@@ -1,23 +1,27 @@
 package cn.ulyer.generator.rest;
 
 import cn.ulyer.generator.core.GenConfiguration;
+import cn.ulyer.generator.core.GeneratorContext;
+import cn.ulyer.generator.core.GeneratorParams;
 import cn.ulyer.generator.core.datasource.DataSourceHelper;
 import cn.ulyer.generator.core.types.DataBaseTypes;
-import cn.ulyer.generator.model.DataSourceProperty;
-import cn.ulyer.generator.model.GenColumn;
-import cn.ulyer.generator.model.GenTable;
+import cn.ulyer.generator.model.*;
 import cn.ulyer.generator.util.ArrayUtil;
 import cn.ulyer.generator.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author ulyer
@@ -25,6 +29,7 @@ import java.util.Map;
  */
 @RestController(GenRest.NAME)
 @RequestMapping("/genRest")
+@Slf4j
 public class GenRest {
 
     public final static String NAME = "generatorRest";
@@ -37,21 +42,22 @@ public class GenRest {
 
     /**
      * 导入查询出database的表
+     *
      * @param tableNames
      * @param id
      * @return
      */
     @PostMapping("/import")
     public String importTable(@RequestParam List<String> tableNames, @RequestParam String id) throws Exception {
-        DataSourceProperty property =  mongoTemplate.findOne(new Query(Criteria.where("_id").is(id)),DataSourceProperty.class);
-        if(property==null){
+        DataSourceProperty property = mongoTemplate.findOne(new Query(Criteria.where("_id").is(id)), DataSourceProperty.class);
+        if (property == null) {
             return "success: 0";
         }
         DataSourceHelper dataSourceHelper = genConfiguration.getDataSourceHelper(DataBaseTypes.valueOf(property.getType()));
         DataSource dataSource = dataSourceHelper.create(property);
-        Map<String,String> params = new HashMap<>();
-        params.put("tableName", ArrayUtil.iteratorToString(tableNames.iterator(),","));
-        List<GenTable> genTables = dataSourceHelper.getTables(dataSource,params);
+        Map<String, String> params = new HashMap<>();
+        params.put("tableName", ArrayUtil.iteratorToString(tableNames.iterator(), ","));
+        List<GenTable> genTables = dataSourceHelper.getTables(dataSource, params);
         int successCount = 0;
         for (GenTable genTable : genTables) {
             final long count = mongoTemplate.count(Query.query(Criteria.where("dataSourceId").is(id).and("tableName").is(genTable.getTableName())), GenTable.class);
@@ -72,7 +78,46 @@ public class GenRest {
                 successCount++;
             }
         }
-        return "success:"+successCount+" fail："+(genTables.size()-successCount);
+        return "success:" + successCount + " fail：" + (genTables.size() - successCount);
     }
 
+    /**
+     * 代码生成
+     * result keys:  success(bool) path(filePath) error (string)
+     *
+     * @param generatorParams
+     * @return
+     */
+    @PostMapping("/start")
+    public Map<String, Object> start(@Validated @RequestBody GeneratorParams generatorParams) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", false);
+        // 构造 generatorContext
+        List<GenModule> modules = mongoTemplate.find(Query.query(Criteria.where("moduleName").in(generatorParams.getGenModules())), GenModule.class);
+        List<GenTable> tables = mongoTemplate.find(Query.query(Criteria.where("_id").in(generatorParams.getGenTables())), GenTable.class);
+        // 。。。额 就是不想判断 和引入新的依赖来做了
+        tables = ArrayUtil.acceptNonNull(tables);
+        modules = ArrayUtil.acceptNonNull(modules);
+        List<String> templateNames = new LinkedList<>();
+        modules.stream().map(genModule -> genModule.getTemplates()).collect(Collectors.toList()).forEach(templateNames::addAll);
+        List<GenTemplate> templates = mongoTemplate.find(Query.query(Criteria.where("name").in(templateNames)), GenTemplate.class);
+        templates = ArrayUtil.acceptNonNull(templates);
+        GeneratorContext generatorContext = GeneratorContext.ContextBuilder
+                .builder(generatorParams.getExtendsVariables())
+                .basePackage(generatorParams.getBasePackage())
+                .author(generatorParams.getAuthor())
+                .tables(tables.toArray(new GenTable[tables.size()]))
+                .templates(templates.toArray(new GenTemplate[templates.size()]))
+                .build();
+        Path directory;
+        try {
+            directory = Files.createTempDirectory(UUID.randomUUID().toString());
+        } catch (IOException e) {
+            log.error("create tempDir error:{}", e);
+            result.put("error", e.getMessage());
+            return result;
+        }
+        genConfiguration.getTemplateGenerator().generator(generatorContext, directory.toFile().getPath());
+        return result;
+    }
 }

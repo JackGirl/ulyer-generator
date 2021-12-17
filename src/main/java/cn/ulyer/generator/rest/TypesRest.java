@@ -1,7 +1,6 @@
 package cn.ulyer.generator.rest;
 
 
-import cn.ulyer.generator.core.GenConfiguration;
 import cn.ulyer.generator.core.types.DataBaseTypes;
 import cn.ulyer.generator.core.types.FileTypes;
 import cn.ulyer.generator.core.types.JavaTypes;
@@ -33,18 +32,6 @@ public class TypesRest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    /**
-     * 支持生成哪些模块
-     * @return
-     */
-    @GetMapping("/modules")
-    public Map<String,List<GenModule>> modules(){
-        List<GenModule> genModules =  mongoTemplate.findAll(GenModule.class);
-        if(CollectionUtils.isEmpty(genModules)){
-            return new HashMap<>();
-        }
-        return genModules.stream().collect(Collectors.groupingBy(GenModule::getGroup));
-    }
 
     /**
      * 支持的数据库类型
