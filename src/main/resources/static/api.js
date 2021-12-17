@@ -165,6 +165,21 @@ const saveOrUpdateModule = (data)=>{
     })
 }
 
+/***
+ *
+ * ================================
+ * 生成  相关
+ * ===============================
+ *
+ */
+
+const startGenerator = (model)=>{
+    return axios({
+        url:`${context}/genRest/start`,
+        data:model,
+        method:'post'
+    })
+}
 export default {
     queryGenTables,
     queryJavaTypes,
@@ -182,5 +197,6 @@ export default {
     queryFileTypes,
     saveOrUpdateModule,
     removeTemplate,
-    saveOrUpdateTemplate
+    saveOrUpdateTemplate,
+    startGenerator
 }

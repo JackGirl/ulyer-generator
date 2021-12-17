@@ -81,19 +81,24 @@ export default defineComponent({
          * 开始生成
          */
         const spinning = ref(false)
-        const start = ()=>{
+        const start = ()=> {
             spinning.value = true
-            try{
-                generatorParams.extendsVariables =   JSON.parse(extendVariable.value)
-            }catch (e){
+            try {
+                generatorParams.extendsVariables = JSON.parse(extendVariable.value)
+            } catch (e) {
                 spinning.value = false
                 antd.message.error('扩展变量需要符合json格式')
                 return
             }
-            setTimeout(()=>{
+            Api.startGenerator(generatorParams).then(res => {
                 spinning.value = false
-                console.info(generatorParams)
-            },5000)
+                if(res.data.success){
+                    antd.notification.success({message:'success path:'+res.data.path})
+                    //弹出下载框
+                    return
+                }
+                antd.notification.error({message:res.data.error})
+            })
         }
         return{
             generatorParams,
