@@ -11,3 +11,9 @@ export const renderCodeMirror = (mode,value,htmlId)=>{
         readOnly:false,
     });
 }
+
+export const resetForm = (ref)=>{
+    if(ref&&ref.value){
+        ref.value.resetFields()
+    }
+}

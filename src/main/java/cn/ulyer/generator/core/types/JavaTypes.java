@@ -20,7 +20,7 @@ public enum JavaTypes {
 
 
 
-    private JavaTypes(String typeName){
+    JavaTypes(String typeName){
         this.typeName = typeName;
     }
 

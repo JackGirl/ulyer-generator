@@ -47,7 +47,7 @@ public class MysqlHelper implements DataSourceHelper{
     @Override
     public DataSource create(DataSourceProperty dataSourceProperty) throws JsonProcessingException {
         String json = dataSourceProperty.getConnectionProperty();
-        MysqlProperty mysqlProperty = (MysqlProperty) objectMapper.readValue(json, GenConfiguration.getDbProperty(DataBaseTypes.MYSQL).getClass());
+        MysqlProperty mysqlProperty = (MysqlProperty) objectMapper.readValue(json,DataBaseTypes.MYSQL.getDbProperty().getClass());
         String driver = StringUtil.isBlank(mysqlProperty.getDriver()) ? DRIVER : mysqlProperty.getDriver();
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl(mysqlProperty.getJdbcUrl());

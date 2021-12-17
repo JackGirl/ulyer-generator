@@ -27,7 +27,6 @@ public class GenConfiguration {
 
     private static Map<DataBaseTypes, DataSourceHelper> DATA_SOURCE_HELPER_MAP;
 
-    private final static Map<DataBaseTypes,DbProperty> DB_PROPERTY_TYPE = new HashMap<>();
 
     private final static Map<String,Class<?>> typeConvertMap = new ConcurrentHashMap<>(128);
 
@@ -41,13 +40,9 @@ public class GenConfiguration {
     static {
         initDataSourceHelper();
         registerConvert();
-        registerDbProperty();
     }
 
-    private static void registerDbProperty() {
-        DB_PROPERTY_TYPE.put(DataBaseTypes.MYSQL,new MysqlProperty());
-        DB_PROPERTY_TYPE.put(DataBaseTypes.ORACLE,new OracleProperty());
-    }
+
 
     private static void registerConvert() {
         typeConvertMap.put("TINYINT",Integer.class );
@@ -90,10 +85,6 @@ public class GenConfiguration {
             throw new NullPointerException("retrieve datasourceHelper got null types:"+types.name());
         }
         return dataSourceHelper;
-    }
-
-    public static DbProperty getDbProperty(DataBaseTypes types){
-        return DB_PROPERTY_TYPE.get(types);
     }
 
     public void registerConvert(String name,Class<?> clazz){

@@ -16,6 +16,13 @@ const queryJavaTypes = () => {
         url:`${context}/types/javaTypes`
     })
 }
+
+const queryFileTypes = ()=>{
+    return axios({
+        url:`${context}/types/fileTypes`
+    })
+}
+
 /***
  *
  * ================================
@@ -119,6 +126,14 @@ const removeTemplate = (templateName)=>{
         }
     })
 }
+
+const saveOrUpdateTemplate = (template) =>{
+    return axios({
+        url:`${context}/templateRest/saveOrUpdate`,
+        data:template,
+        method:'post'
+    })
+}
 /***
  *
  * ================================
@@ -141,6 +156,13 @@ const removeModule = (moduleName)=>{
     })
 }
 
+const saveOrUpdateModule = (data)=>{
+    return axios({
+        url:`${context}/moduleRest/saveOrUpdate`,
+        method:'post',
+        data
+    })
+}
 
 export default {
     queryGenTables,
@@ -155,5 +177,9 @@ export default {
     removeDataSource,
     listModules,
     listTemplates,
-    removeModule
+    removeModule,
+    queryFileTypes,
+    saveOrUpdateModule,
+    removeTemplate,
+    saveOrUpdateTemplate
 }

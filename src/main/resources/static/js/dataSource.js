@@ -1,5 +1,7 @@
 const {createApp,ref,defineComponent,reactive,onMounted} = Vue
 import Api from '../api.js'
+import {resetForm} from "../lib/utils.js";
+
 const columns = [
     {
         title:'数据源ID',
@@ -74,9 +76,7 @@ const DataSource = defineComponent({
         const createFormRef = ref()
         const openCreate = ()=>{
             createVisible.value = true
-            if(createFormRef.value){
-                createFormRef.value.resetFields()
-            }
+            resetForm(createFormRef)
         }
         const fillPropertyJson = (type)=>{
             dbTypes.value.forEach(db=>{

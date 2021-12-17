@@ -1,33 +1,60 @@
-const {defineComponent,createApp,reactive,ref,onMounted,nextTick} = Vue
+const {defineComponent, createApp, reactive, ref, onMounted, nextTick,computed} = Vue
 import Api from '../api.js'
-import {renderCodeMirror} from "../lib/utils.js";
+import {renderCodeMirror, resetForm} from "../lib/utils.js";
+
 let editor = undefined;
 
 const Template = defineComponent({
-    name:'template',
-    setup(){
+    name: 'template',
+    setup() {
+        const fileTypes = ref([])
+        const listFileTypes = ()=>{
+            return new Promise((resolve)=>{
+                Api.queryFileTypes().then(res=>{fileTypes.value = res.data; resolve()})
+            })
+        }
         //module
         const moduleLoading = ref(false)
         const modules = ref([])
         const moduleSearchModel = reactive({})
-        const queryModules = ()=>{
+        //CURD模块
+        const queryModules = () => {
             moduleLoading.value = true
-            Api.listModules(moduleSearchModel).then(res=>{
+            Api.listModules(moduleSearchModel).then(res => {
                 modules.value = res.data
             })
             moduleLoading.value = false
         }
-        onMounted(()=>{
+        onMounted(() => {
             queryModules()
         })
-        const removeModules = (module)=>{
+        const moduleVisible = ref(false)
+        const moduleFormRef = ref()
+        const m_model = {
+            moduleName: "",
+            group: '',
+            templates: []
+        }
+        const moduleFormModel = reactive(Object.assign({}, m_model))
+        const selectTemplates = ref([])
+        const openModuleForm = (record) => {
+            Api.listTemplates().then(res => {
+                selectTemplates.value = res.data
+            })
+            resetForm(moduleFormRef)
+            if (record) {
+                Object.assign(moduleFormModel, record)
+            }
+            moduleVisible.value = true
+        }
+        const removeModules = (module) => {
             antd.Modal.confirm({
-                titel:'提示',
-                content:'是否删除?',
-                onOk:()=>{
+                titel: '提示',
+                content: '是否删除?',
+                onOk: () => {
                     return new Promise(resolve => {
-                        Api.removeModule(module.moduleName).then(res=>{
-                            antd.notification.success({message:'deleted'})
+                        Api.removeModule(module.moduleName).then(res => {
+                            antd.notification.success({message: 'deleted'})
                             queryModules()
                         })
                         resolve()
@@ -35,44 +62,46 @@ const Template = defineComponent({
                 }
             })
         }
-        //添加修改模块
-        const moduleVisible = ref(false)
-        const moduleFormRef = ref()
-        const moduleFormModel = reactive({})
-        const openModuleForm = (record) =>{
-            if(record){
-
-            }else{
-
-            }
-            moduleVisible.value = true
-        }
-        const saveOrUpdateModule = ()=>{
-
+        const saveOrUpdateModule = () => {
+            moduleFormRef.value.validate().then(() => {
+                    Api.saveOrUpdateModule(moduleFormModel).then(res=>{
+                        antd.message.success('SUCCESS')
+                        queryModules()
+                        moduleVisible.value = false
+                    })
+                })
         }
 
         //template
         const templateLoading = ref(false)
         const templates = ref([])
-        const templateSearchModel = reactive({name:undefined})
-        const templateQuery = ()=>{
+        const t_model = {
+            name:null,
+            type:'',
+            nameExpression:'',
+            template:'',
+            disabled:false,
+        }
+        //crud模板
+        const templateSearchModel = reactive(Object.assign({},t_model))
+        const templateQuery = () => {
             templateLoading.value = true
-            Api.listTemplates(templateSearchModel).then(res=>{
+            Api.listTemplates(templateSearchModel).then(res => {
                 templates.value = res.data
                 templateLoading.value = false
             })
         }
-        onMounted(()=>{
+        onMounted(() => {
             templateQuery()
         })
-        const removeTemplate = (template)=>{
+        const removeTemplate = (template) => {
             antd.Modal.confirm({
-                titel:'提示',
-                content:'删除前请注意修改选择了的当前模板的模块?',
-                onOk:()=>{
+                titel: '提示',
+                content: '删除前请注意修改选择了的当前模板的模块?',
+                onOk: () => {
                     return new Promise(resolve => {
-                        Api.removeModule(template.name).then(res=>{
-                            antd.notification.success({message:'deleted'})
+                        Api.removeTemplate(template.name).then(res => {
+                            antd.notification.success({message: 'deleted'})
                             templateQuery()
                         })
                         resolve()
@@ -80,33 +109,51 @@ const Template = defineComponent({
                 }
             })
         }
-        //添加删除模块
+
         const templateFormRef = ref()
         const templateVisible = ref(false)
         const templateFormModel = reactive({})
-        const openTemplateForm = (record) =>{
-            if(record){
-
+        const openTemplateForm = async (template) => {
+            await listFileTypes()
+            resetForm(templateFormRef)
+            if (template) {
+                templateFormModel.disabled = true
+                Object.assign(templateFormModel,template)
             }else{
-
+                templateFormModel.disabled = false
             }
+            const defaultMode = "textile"
+            function selectMode(type){
+                let filter = fileTypes.value.filter(fileType=>fileType.type===type)
+                return filter.length==0?defaultMode:filter[0].mode;
+            }
+            const mode = template?selectMode(template.type):defaultMode
             templateVisible.value = true
-            nextTick(()=> {
+            nextTick(() => {
                 if (!editor) {
-                    editor = renderCodeMirror('javascript', "",'code')
+                    editor = renderCodeMirror(mode, "", 'code')
+                }else{
+                    editor.setOption('mode',mode )
                 }
-                editor.setOption('mode', 'javascript')
-                editor.setValue('javascript')
-                editor.setSize(1200,700)
-                setTimeout(()=>editor.refresh(),10);
+                editor.setValue(template?template.template:'')
+                editor.setSize('100%', 700)
+                setTimeout(() => editor.refresh(), 10);
             })
         }
 
-        const saveOrUpdateTemplate = ()=>{
 
+        const saveOrUpdateTemplate = () => {
+            templateFormRef.value.validate().then(()=>{
+                templateFormModel.template = editor.getValue()
+                Api.saveOrUpdateTemplate(templateFormModel).then(()=>{
+                    antd.notification.success({message:"success"})
+                    templateQuery()
+                    templateVisible.value = false
+                })
+            })
         }
 
-        return{
+        return {
             moduleLoading,
             modules,
             moduleSearchModel,
@@ -127,7 +174,11 @@ const Template = defineComponent({
             openTemplateForm,
             moduleVisible,
             templateVisible,
-            routerToTablePage:()=>{window.location.href=`${context}/page/tables`}
+            selectTemplates,
+            fileTypes,
+            routerToTablePage: () => {
+                window.location.href = `${context}/page/tables`
+            }
         }
     }
 })

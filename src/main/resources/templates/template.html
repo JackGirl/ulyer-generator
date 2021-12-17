@@ -5,6 +5,17 @@
     <link rel="stylesheet" href="${contextPath!}/static/lib/codemirror/codemirror.css">
     <link rel="stylesheet" href="${contextPath!}/static/lib/codemirror/theme/darcula.css">
     <#include "common/lib.html">
+    <script src="${contextPath!}/static/lib/codemirror/codemirror.js"></script>
+    <script src="${contextPath!}/static/lib/codemirror/mode/javascript.js"></script>
+    <script src="${contextPath!}/static/lib/codemirror/mode/htmlmixed.js"></script>
+    <script src="${contextPath!}/static/lib/codemirror/mode/vue.js"></script>
+    <script src="${contextPath!}/static/lib/codemirror/mode/css.js"></script>
+    <script src="${contextPath!}/static/lib/codemirror/mode/yaml.js"></script>
+    <script src="${contextPath!}/static/lib/codemirror/mode/xml.js"></script>
+    <script src="${contextPath!}/static/lib/codemirror/mode/clike.js"></script>
+    <script src="${contextPath!}/static/lib/codemirror/mode/textile.js"></script>
+    <script src="${contextPath!}/static/lib/codemirror/addon/mode/overlay.js"></script>
+    <script src="${contextPath!}/static/lib/codemirror/addon/selection/active-line.js"></script>
     <script type="module" src="${contextPath!}/static/js/template.js"></script>
     <title>模板配置</title>
 </head>
@@ -23,11 +34,11 @@
         <a-col span="8" offset="4">
             名称:<a-input @change="queryModules" v-model:value="moduleSearchModel.moduleName" style="width:190px"></a-input>
             分组:<a-input @change="queryModules" v-model:value="moduleSearchModel.group" style="width:190px" ></a-input>
-            <a-button type="primary" @click="openModuleForm(null)">新增</a-button>
+            <a-button type="primary" @click="openModuleForm()">新增</a-button>
         </a-col>
         <a-col span="8">
             名称过滤:<a-input style="width:300px" @change="templateQuery" v-model:value="templateSearchModel.name"></a-input>
-            <a-button type="primary"  @click="openTemplateForm(null)">新增</a-button>
+            <a-button type="primary"  @click="openTemplateForm()">新增</a-button>
         </a-col>
     </a-row>
     <a-row :gutter="10">
@@ -41,7 +52,7 @@
                         <p><span style="color:firebrick;font-size: 18px">分组:{{module.group}}</span>    </p>
                         <a-tag color="#108ee9" style="margin-top: 3px" v-for="tag in module.templates">{{tag}}</a-tag>
                         <template #actions>
-                            <a-button type="text" style="color: #108ee9" @click="openModuleForm">UPDATE</a-button>
+                            <a-button type="text" style="color: #108ee9" @click="openModuleForm(module)">UPDATE</a-button>
                             <a-button type="text" danger @click="removeModules(module)">DELETE</a-button>
                         </template>
                     </a-card>
@@ -65,27 +76,69 @@
     </a-row>
 
     <!----添加修改模块--->
-    <a-modal title="模块" v-model:visible="moduleVisible" width="30%">
+    <a-modal footer="" title="模块" v-model:visible="moduleVisible" width="30%">
         <div style="padding: 20px">
             <a-form :model="moduleFormModel" ref="moduleFormRef">
-
-            </a-form>
-        </div>
-    </a-modal>
-    <!--添加修改模板-->
-    <a-modal v-model:visible="templateVisible" title="模板" width="70%">
-        <div style="padding: 20px">
-            <a-form ref="templateFormRef" :model="templateFormModel">
-                <a-form-item>
-                    <textarea  id="code" name="code"></textarea>
+                <a-form-item :rules="[{required:true,message:'必填'}]" label="模块" name="moduleName">
+                    <a-input v-model:value="moduleFormModel.moduleName"></a-input>
+                </a-form-item>
+                <a-form-item :rules="[{required:true,message:'必填'}]" label="分组" name="group">
+                    <a-input v-model:value="moduleFormModel.group"></a-input>
+                </a-form-item>
+                <a-form-item :rules="[{required:true,message:'必选'}]" label="模板" name="templates">
+                   <a-select mode="multiple" v-model:value="moduleFormModel.templates">
+                        <a-select-option v-for="template in selectTemplates" :value="template.name">{{template.name}}</a-select-option>
+                   </a-select>
+                </a-form-item>
+                <a-form-item >
+                    <a-button @click="saveOrUpdateModule" type="primary">提交</a-button>
                 </a-form-item>
             </a-form>
         </div>
     </a-modal>
+    <!--添加修改模板-->
+    <a-modal footer="" v-model:visible="templateVisible" title="模板" width="80%">
+        <div style="padding: 20px">
+            <a-form ref="templateFormRef" layout="vertical" :model="templateFormModel" :labelCol="{span:4}">
+                <a-row>
+                    <a-col span="6">
+                        <a-form-item  label="模板" name="name">
+                            <a-input :disabled="templateFormModel.disabled" v-model:value="templateFormModel.name"/>
+                        </a-form-item>
+                        <a-form-item  label="生成文件名称规则" name="nameExpression">
+                            <a-input :disabled="templateFormModel.disabled" v-model:value="templateFormModel.nameExpression"/>
+                        </a-form-item>
+                        <a-form-item  label="文件类型" name="type">
+                            <a-auto-complete
+                                    :disabled="templateFormModel.disabled"
+                                    v-model:value="templateFormModel.type"
+                                    style="width: 200px">
+                                <template #dataSource>
+                                    <a-select-option v-for="type in fileTypes"  :value="type.type">
+                                        {{ type.type }}
+                                    </a-select-option>
+                                </template>
+                            </a-auto-complete>
+                        </a-form-item>
+                        <a-form-item>
+                            <a-button @click="saveOrUpdateTemplate">提交</a-button>
+                        </a-form-item>
+
+                    </a-col>
+                    <a-col span="18">
+                        <a-form-item label="template">
+                            <textarea   id="code" name="code"></textarea>
+                        </a-form-item>
+                    </a-col>
+
+
+                </a-row>
+
+            </a-form>
+        </div>
+    </a-modal>
 </div>
-<script src="${contextPath!}/static/lib/codemirror/codemirror.js"></script>
-<script src="${contextPath!}/static/lib/codemirror/mode/javascript.js"></script>
-<script src="${contextPath!}/static/lib/codemirror/addon/selection/active-line.js"></script>
+
 
 </body>
 </html>
