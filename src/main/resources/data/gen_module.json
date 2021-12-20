@@ -1,0 +1,25 @@
+[{
+  "_id": "vue2_element",
+  "templates": [
+    "vue2_elementUi",
+    "vue_axios"
+  ],
+  "group": "vue",
+  "_class": "cn.ulyer.generator.model.GenModule"
+},{
+  "_id": "mybatis_plus",
+  "templates": [
+    "mybatis_plus_mapper",
+    "mybatis_plus_service",
+    "mybatis_plus_serviceImpl",
+    "mybatis_xml",
+    "mybatis_plus_entity"
+  ],
+  "group": "orm"
+},{
+  "_id": "rest_api",
+  "templates": [
+    "mvc_rest"
+  ],
+  "group": "java"
+}]
