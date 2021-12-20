@@ -134,7 +134,6 @@ public class GenRest {
             return result;
         }
         result.put("success",true);
-        result.put("path",directory.toFile().getPath());
         return result;
     }
 }

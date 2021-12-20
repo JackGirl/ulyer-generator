@@ -138,8 +138,7 @@ const Template = defineComponent({
                 }
                 editor.setValue(template?template.template:'')
                 editor.setSize('100%', 700)
-                //行号
-               // editor.setOption("lineNumbers",true);
+                editor.setOption("lineNumbers",true);
                 setTimeout(() => editor.refresh(), 10);
             })
         }
