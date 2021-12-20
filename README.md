@@ -1,6 +1,6 @@
 # ulyer-generator
 
-在线配置代码生成器
+在线配置通用代码生成器
 <hr/>  
 
 ### 项目环境 
@@ -72,3 +72,10 @@
 
 #### 部分截图
 
+![table界面](https://gitee.com/xiaoxiaofans/ulyer-generator/raw/main/images/tables.png)
+![编辑列信息](https://gitee.com/xiaoxiaofans/ulyer-generator/raw/main/images/columns.png)
+![数据源配置](https://gitee.com/xiaoxiaofans/ulyer-generator/raw/main/images/dataSource.png)
+![模板模块配置](https://gitee.com/xiaoxiaofans/ulyer-generator/raw/main/images/template.png)
+![编辑模板](https://gitee.com/xiaoxiaofans/ulyer-generator/raw/main/images/templateEdit.png)
+![生成代码控制台](https://gitee.com/xiaoxiaofans/ulyer-generator/raw/main/images/gen-success.png)
+![生成](https://gitee.com/xiaoxiaofans/ulyer-generator/raw/main/images/generator.png)
