@@ -137,6 +137,7 @@ public abstract class BaseTemplateGenerator implements TemplateGenerator {
         processVariables.put("template", nullableTemplate);
         processVariables.put("columns", table == null ? null : table.getColumns());
         processVariables.put("idType", table == null ? null : table.getIdType());
+        processVariables.put("idProp",table==null? null: table.getIdProp());
         processVariables.put("author", context.getAuthor());
         processVariables.put("basePackage", context.getBackPackage());
         return processVariables;
