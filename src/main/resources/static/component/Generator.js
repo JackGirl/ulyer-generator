@@ -26,7 +26,7 @@ const template =
                     </a-form-item>
                 </a-col>
                 <a-col span="14">
-                    <a-form-item label="包路径" name="basePackage">
+                    <a-form-item  :rules="[{required:true}]" label="包路径" name="basePackage">
                         <a-input placeholder="cn.ulyer" v-model:value="generatorParams.basePackage"></a-input>
                     </a-form-item>
                     <a-form-item label="作者" name="author">
@@ -35,7 +35,7 @@ const template =
                     <a-form-item label="扩展变量" name="basePackage">
                         <a-alert
                                 message="提示"
-                                description="基础变量genTable,genTemplate,basePackage,author并且不可覆盖,扩展变量需要满足json格式"
+                                description="基础变量table(存在时另有idType),module(模板模块),template,basePackage,author并且不可覆盖,扩展变量需要满足json格式"
                                 type="info"
                                 show-icon
                         />
@@ -67,7 +67,7 @@ export default defineComponent({
         })
         const extendVariable = ref('{}')
         const generatorParams = reactive({
-            basePackage:'',
+            basePackage:'cn.ulyer',
             genModules:[],
             genTables:[],
             author:'ulyer-gen',
@@ -98,6 +98,9 @@ export default defineComponent({
                     return
                 }
                 antd.notification.error({message:res.data.error})
+            }).catch(e=>{
+                spinning.value = false;
+                antd.notification.error({message:'生成出错'+e.message})
             })
         }
         return{

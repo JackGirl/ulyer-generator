@@ -19,7 +19,7 @@ public interface TemplateGenerator {
      * @param folderPath 指定在某个文件夹路径下生成
      * @return
      */
-    void generator(GeneratorContext generatorContext, String folderPath);
+    void generator(GeneratorContext generatorContext, String folderPath) throws Exception;
 
 
 }

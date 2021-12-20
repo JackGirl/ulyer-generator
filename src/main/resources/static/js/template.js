@@ -9,10 +9,12 @@ const Template = defineComponent({
     setup() {
         const fileTypes = ref([])
         const listFileTypes = ()=>{
-            return new Promise((resolve)=>{
-                Api.queryFileTypes().then(res=>{fileTypes.value = res.data; resolve()})
-            })
+                Api.queryFileTypes().then(res=>{
+                    res.data.forEach(value=>{value.value = value.type})
+                    fileTypes.value = res.data;
+                })
         }
+        onMounted(()=>{ listFileTypes()})
         //module
         const moduleLoading = ref(false)
         const modules = ref([])
@@ -41,11 +43,11 @@ const Template = defineComponent({
             Api.listTemplates().then(res => {
                 selectTemplates.value = res.data
             })
+            moduleVisible.value = true
             resetForm(moduleFormRef)
             if (record) {
                 Object.assign(moduleFormModel, record)
             }
-            moduleVisible.value = true
         }
         const removeModules = (module) => {
             antd.Modal.confirm({
@@ -113,8 +115,8 @@ const Template = defineComponent({
         const templateFormRef = ref()
         const templateVisible = ref(false)
         const templateFormModel = reactive({})
-        const openTemplateForm = async (template) => {
-            await listFileTypes()
+        const openTemplateForm = (template)  => {
+            templateVisible.value = true
             resetForm(templateFormRef)
             if (template) {
                 templateFormModel.disabled = true
@@ -128,7 +130,6 @@ const Template = defineComponent({
                 return filter.length==0?defaultMode:filter[0].mode;
             }
             const mode = template?selectMode(template.type):defaultMode
-            templateVisible.value = true
             nextTick(() => {
                 if (!editor) {
                     editor = renderCodeMirror(mode, "", 'code')
@@ -137,6 +138,7 @@ const Template = defineComponent({
                 }
                 editor.setValue(template?template.template:'')
                 editor.setSize('100%', 700)
+                editor.setOption("lineNumbers",true);
                 setTimeout(() => editor.refresh(), 10);
             })
         }

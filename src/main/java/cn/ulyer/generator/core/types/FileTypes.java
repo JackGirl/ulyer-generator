@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public enum FileTypes {
 
-    java("text/c-java"),
+    java("text/x-java"),
     xml("xml"),
     vue("vue"),
     js("javascript"),

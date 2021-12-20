@@ -19,5 +19,6 @@ server:
     context-path:
 logging:
   level:
+    cn.ulyer.generator.core.gen: DEBUG
     org.springframework.jdbc.core: DEBUG
     org.springframework.jdbc.core.StatementCreatorUtils: trace

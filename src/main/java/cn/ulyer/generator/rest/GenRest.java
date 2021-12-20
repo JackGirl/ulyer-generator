@@ -5,6 +5,8 @@ import cn.ulyer.generator.core.GeneratorContext;
 import cn.ulyer.generator.core.GeneratorParams;
 import cn.ulyer.generator.core.datasource.DataSourceHelper;
 import cn.ulyer.generator.core.types.DataBaseTypes;
+import cn.ulyer.generator.core.wrapper.ModuleWrapper;
+import cn.ulyer.generator.core.wrapper.TableWrapper;
 import cn.ulyer.generator.model.*;
 import cn.ulyer.generator.util.ArrayUtil;
 import cn.ulyer.generator.util.StringUtil;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,20 +97,27 @@ public class GenRest {
         result.put("success", false);
         // 构造 generatorContext
         List<GenModule> modules = mongoTemplate.find(Query.query(Criteria.where("moduleName").in(generatorParams.getGenModules())), GenModule.class);
+        if(CollectionUtils.isEmpty(modules)){
+            result.put("error","模块必选");
+            return result;
+        }
         List<GenTable> tables = mongoTemplate.find(Query.query(Criteria.where("_id").in(generatorParams.getGenTables())), GenTable.class);
         // 。。。额 就是不想判断 和引入新的依赖来做了
         tables = ArrayUtil.acceptNonNull(tables);
-        modules = ArrayUtil.acceptNonNull(modules);
-        List<String> templateNames = new LinkedList<>();
-        modules.stream().map(genModule -> genModule.getTemplates()).collect(Collectors.toList()).forEach(templateNames::addAll);
-        List<GenTemplate> templates = mongoTemplate.find(Query.query(Criteria.where("name").in(templateNames)), GenTemplate.class);
-        templates = ArrayUtil.acceptNonNull(templates);
+        List<ModuleWrapper> moduleWrappers = new ArrayList<>();
+        modules.forEach(module->{
+            moduleWrappers.add(ModuleWrapper.of(module,mongoTemplate.find(Query.query(Criteria.where("name").in(module.getTemplates())),GenTemplate.class)));
+        });
+        List<TableWrapper> tableWrappers = new ArrayList<>();
+        tables.forEach(table->{
+            tableWrappers.add(TableWrapper.of(table,mongoTemplate.find(Query.query(Criteria.where("tableId").is(table.get_id())),GenColumn.class)));
+        });
         GeneratorContext generatorContext = GeneratorContext.ContextBuilder
                 .builder(generatorParams.getExtendsVariables())
                 .basePackage(generatorParams.getBasePackage())
                 .author(generatorParams.getAuthor())
-                .tables(tables.toArray(new GenTable[tables.size()]))
-                .templates(templates.toArray(new GenTemplate[templates.size()]))
+                .tables(tableWrappers)
+                .modules(moduleWrappers)
                 .build();
         Path directory;
         try {
@@ -117,7 +127,13 @@ public class GenRest {
             result.put("error", e.getMessage());
             return result;
         }
-        genConfiguration.getTemplateGenerator().generator(generatorContext, directory.toFile().getPath());
+        try {
+            genConfiguration.getTemplateGenerator().generator(generatorContext, directory.toFile().getPath());
+        } catch (Exception e) {
+            result.put("error",e.getMessage());
+            return result;
+        }
+        result.put("success",true);
         return result;
     }
 }
