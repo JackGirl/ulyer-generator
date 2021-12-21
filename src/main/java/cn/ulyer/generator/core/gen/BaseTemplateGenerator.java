@@ -5,7 +5,6 @@ import cn.ulyer.generator.core.wrapper.ModuleWrapper;
 import cn.ulyer.generator.core.wrapper.TableWrapper;
 import cn.ulyer.generator.model.GenTemplate;
 import cn.ulyer.generator.util.StringUtil;
-import freemarker.template.utility.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.util.CollectionUtils;

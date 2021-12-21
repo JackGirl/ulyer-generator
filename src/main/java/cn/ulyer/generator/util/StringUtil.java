@@ -1,21 +1,15 @@
 package cn.ulyer.generator.util;
 
-import cn.ulyer.generator.core.property.MysqlProperty;
-import cn.ulyer.generator.model.GenTable;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.expression.MapAccessor;
-import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.common.CompositeStringExpression;
 import org.springframework.expression.common.TemplateParserContext;
-import org.springframework.expression.spel.standard.SpelExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
