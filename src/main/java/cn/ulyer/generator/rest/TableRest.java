@@ -108,7 +108,7 @@ public class TableRest {
         mongoOperations.upsert(pairs);
         BulkWriteResult result = mongoOperations.execute();
         Integer modifyCount = result.getModifiedCount();
-        return "update:"+modifyCount+" fail:"+(list.size()-modifyCount);
+        return "data change:"+modifyCount+" not change:"+(list.size()-modifyCount);
     }
 
     @DeleteMapping("/remove/{tableId}")

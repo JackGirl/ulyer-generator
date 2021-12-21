@@ -1,5 +1,6 @@
 package cn.ulyer.generator.util;
 
+import cn.ulyer.generator.core.property.MysqlProperty;
 import cn.ulyer.generator.model.GenTable;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -80,6 +81,13 @@ public class StringUtil {
         }
     }
 
+    public static  <T> T fromJson(String json,Class<T> clazz){
+        try {
+           return objectMapper.readValue(json,clazz);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
     /**
      * 解析el表达式
      * @param expr

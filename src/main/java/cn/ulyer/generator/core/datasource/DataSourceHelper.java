@@ -18,7 +18,20 @@ public interface DataSourceHelper {
 
     DataSource create(DataSourceProperty dataSourceProperty) throws Exception;
 
+    /**
+     *
+     * @param dataSource
+     * @param params
+     * @return empty list or data
+     */
     List<GenTable> getTables(DataSource dataSource, Map<String,String> params);
 
+    /**
+     * params must provide a single tableName
+     * @param dataSource
+     * @param configuration
+     * @param params
+     * @return empty list or data
+     */
     List<GenColumn> getColumns(DataSource dataSource, GenConfiguration configuration, Map<String, String> params);
 }

@@ -75,7 +75,7 @@ public class GenRest {
                 genColumns.forEach(g -> {
                     g.setTableId(genTable.get_id());
                     g.setJavaType(genConfiguration.convert(g.getJdbcType()).getName());
-                    g.setPropertyName(StringUtil.toCamelCase(g.getName()));
+                    g.setPropertyName(StringUtil.toCamelCase(g.getName().toLowerCase(Locale.ROOT)));
                 });
                 mongoTemplate.insert(genColumns, GenColumn.class);
                 successCount++;
@@ -133,6 +133,7 @@ public class GenRest {
             result.put("error",e.getMessage());
             return result;
         }
+        result.put("path",directory.toFile().getPath());
         result.put("success",true);
         return result;
     }

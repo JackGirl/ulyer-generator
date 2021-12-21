@@ -2,7 +2,6 @@ package cn.ulyer.generator.core.datasource;
 
 import cn.ulyer.generator.core.GenConfiguration;
 import cn.ulyer.generator.core.property.MysqlProperty;
-import cn.ulyer.generator.core.types.DataBaseTypes;
 import cn.ulyer.generator.model.DataSourceProperty;
 import cn.ulyer.generator.model.GenColumn;
 import cn.ulyer.generator.model.GenTable;
@@ -10,8 +9,6 @@ import cn.ulyer.generator.util.StringUtil;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -23,11 +20,10 @@ import java.util.*;
  * @author ulyer
  * @date 2021.12.13
  */
-public class MysqlHelper implements DataSourceHelper{
+public class MysqlHelper implements DataSourceHelper {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    final String TABLE_QUERY = "SELECT table_name tableName, table_comment comment FROM information_schema.`TABLES` where table_schema = (select database())";
+    final String TABLE_QUERY = "SELECT table_name tableName, table_comment comment FROM information_schema.`TABLES`  where table_schema = (select database())";
 
     final static String DRIVER = "com.mysql.cj.jdbc.Driver";
 
@@ -47,7 +43,7 @@ public class MysqlHelper implements DataSourceHelper{
     @Override
     public DataSource create(DataSourceProperty dataSourceProperty) throws JsonProcessingException {
         String json = dataSourceProperty.getConnectionProperty();
-        MysqlProperty mysqlProperty = (MysqlProperty) objectMapper.readValue(json,DataBaseTypes.MYSQL.getDbProperty().getClass());
+        MysqlProperty mysqlProperty =StringUtil.fromJson(json,MysqlProperty.class);
         String driver = StringUtil.isBlank(mysqlProperty.getDriver()) ? DRIVER : mysqlProperty.getDriver();
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl(mysqlProperty.getJdbcUrl());
@@ -59,6 +55,7 @@ public class MysqlHelper implements DataSourceHelper{
         return dataSource;
     }
 
+
     @Override
     public List<GenTable> getTables(DataSource dataSource, Map<String, String> params) {
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -68,7 +65,7 @@ public class MysqlHelper implements DataSourceHelper{
             String tableName = params.get("tableName");
             if(!StringUtil.isBlank(tableName)){
                 queryString+=" and table_name in(:tableName)";
-                query.put("tableName",Arrays.asList(tableName.split(",")));
+                query.put("tableName", Arrays.asList(tableName.split(",")));
             }
         }
         List<GenTable> tables =   jdbcTemplate.query(queryString,query,new BeanPropertyRowMapper<>(GenTable.class));
@@ -77,10 +74,9 @@ public class MysqlHelper implements DataSourceHelper{
 
     @Override
     public List<GenColumn> getColumns(DataSource dataSource, GenConfiguration configuration, Map<String, String> params) {
-        String tableName = params.get("tableName");
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        List<GenColumn> columns = jdbcTemplate.query(COLUMN_QUERY,new BeanPropertyRowMapper<>(GenColumn.class),tableName );
-        return columns==null?Collections.EMPTY_LIST:columns;
+        List<GenColumn> columns = jdbcTemplate.query(COLUMN_QUERY,new BeanPropertyRowMapper<>(GenColumn.class),params.get("tableName") );
+        return columns==null? Collections.EMPTY_LIST:columns;
     }
 
 }

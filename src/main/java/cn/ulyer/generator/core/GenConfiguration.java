@@ -42,11 +42,15 @@ public class GenConfiguration {
         typeConvertMap.put("VARCHAR",String.class);
         typeConvertMap.put("VARCHAR2",String.class);
         typeConvertMap.put("NVARCHAR",String.class);
+        typeConvertMap.put("NVARCHAR2",String.class);
+        typeConvertMap.put("NUMBER",Long.class);
         typeConvertMap.put("LONGTEXT",String.class);
         typeConvertMap.put("LONG",String.class);
         typeConvertMap.put("CHAR",String.class);
         typeConvertMap.put("TIMESTAMP", Date.class);
+        typeConvertMap.put("TIMESTAMP(6)", Date.class);
         typeConvertMap.put("DATE",Date.class);
+        typeConvertMap.put("CLOB",String.class);
         typeConvertMap.put("DATETIME",Date.class);
     }
 
