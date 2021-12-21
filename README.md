@@ -47,10 +47,10 @@
 * 模板可以自定义文件名生成规则 使用springEL表达式解析名称包含/时会在上级生成目录   
 * 模块包含多个模板 生成时勾选模板进行生成 方便分组
 
-#### 
+ 
 
 
-#### 常见问题
+### 常见问题
 1.如何扩展使用其他模板插件 如 thymeleaf
 * 实现TemplateGenerator接口
 * 继承BaseTemplateGenerator  
@@ -70,7 +70,7 @@
 * DataBaseTypes 新增枚举
 
 
-#### 部分截图
+### 部分截图
 
 ![table界面](https://gitee.com/xiaoxiaofans/ulyer-generator/raw/main/images/tables.png)
 ![编辑列信息](https://gitee.com/xiaoxiaofans/ulyer-generator/raw/main/images/columns.png)
