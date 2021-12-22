@@ -62,15 +62,6 @@ public class GenConfiguration {
         DATA_SOURCE_HELPER_MAP = Collections.unmodifiableMap(values);
     }
 
-    public static String getUITemplate(String name) {
-        return "";
-    }
-
-    private static String getJavaTemplate() {
-        return "";
-    }
-
-
     public DataSourceHelper getDataSourceHelper(DataBaseTypes types){
         DataSourceHelper dataSourceHelper = DATA_SOURCE_HELPER_MAP.get(types);
         if(dataSourceHelper==null){
